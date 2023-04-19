@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ComercioController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// //LOGIN Y REGISTRO
+// //LOGIN
 Route::controller(LoginController::class)->group(function () {
     Route::post('auth/login', 'login');
     // Route::post('auth/password/recuperar-password', 'solicitarOlvidoClave');
@@ -36,4 +37,13 @@ Route::controller(UsuarioController::class)->group(function () {
     // Route::put('usuario/perfil/actualizar', 'actualizarPerfil');
     // Route::get('usuario/buscar', 'buscarUsuarioCedula');
     // Route::get('usuario/entidad/buscar', 'buscarUsuarioCedulaEntidad');
+});
+
+//COMERCIO
+Route::controller(ComercioController::class)->group(function () {
+    Route::post('comercio/crear', 'crearComercio');
+    Route::post('comercio/ver/{id}', 'verComercio');
+    Route::post('comercio/actualizar/{id}', 'actualizarComercio');
+    Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
+    Route::post('comercio/listar', 'listarAllComercios');
 });
