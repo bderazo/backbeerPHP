@@ -33,7 +33,11 @@ class Comercio extends Model
     public function tipo_comercio(): BelongsTo
     {
         return $this->belongsTo(TipoComercio::class, 'tipo_comercio');
+    }
 
+    public function userTarjeta(): HasMany
+    {
+        return $this->hasMany(UserTarjeta::class);
     }
 
     /**

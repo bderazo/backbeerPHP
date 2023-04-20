@@ -3,41 +3,55 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
-use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
+class UserTarjeta extends Model
 {
-    use HasFactory, Uuid, Notifiable;
-    protected $table = 'usuarios';
+    use HasFactory,Uuid;
+    protected $table = 'user_tarjeta';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'nombres',
-        'apellidos',
+        'user_id',
+        'comercio_id',
+        'estado',
+        'img_perfil',
+        'img_portada',
+        'nombre',
+        'profesion',
+        'empresa',
+        'acreditaciones',
+        'telefono',
+        'direccion',
         'correo',
-        'password',
-        'rol',
-        'identificacion',
-        'registrado_por',
+        'sitio_web'
     ];
 
-    protected $hidden = [
-        'password',
 
-
-    ];
-
-    public function userTarjeta(): HasMany
+    public function user_id(): BelongsTo
     {
-        return $this->hasMany(UserTarjeta::class);
+        return $this->belongsTo(Usuario::class, 'id');
+
+    }
+
+    public function comercio_id(): BelongsTo
+    {
+        return $this->belongsTo(Comercio::class, 'id');
+
+    }
+
+    public function socialesTarjeta(): HasMany
+    {
+        return $this->hasMany(ConfiguracionesTarjeta::class);
+    }
+
+    public function configuracionesTarjeta(): HasMany
+    {
+        return $this->hasMany(SocialesTarjeta::class);
     }
 
     /**
