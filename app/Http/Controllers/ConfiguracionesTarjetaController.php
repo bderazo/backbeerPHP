@@ -20,7 +20,7 @@ class ConfiguracionesTarjetaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'tarjeta_id' => 'required|exists:user_tarjeta,id',
+                'user_tarjeta_id' => 'required|exists:user_tarjeta,id',
                 'estado' => 'nullable',
                 'text_label' => 'nullable',
                 'flag_value' => 'nullable',
@@ -33,7 +33,7 @@ class ConfiguracionesTarjetaController extends Controller
                 ], 422);
             } else {
                 $configuraciones = ConfiguracionesTarjeta::create([
-                    'tarjeta_id' => $request->tarjeta_id,
+                    'user_tarjeta_id' => $request->user_tarjeta_id,
                     'estado' => true,
                     'text_label' => $request->text_label,
                     'flag_value' => $request->flag_value,
@@ -63,7 +63,7 @@ class ConfiguracionesTarjetaController extends Controller
     public function actualizarConfiguracionesTarjeta(Request $request, $id)
     {
         try {
-            $configuraciones = ConfiguracionesTarjeta::where('tarjeta_id', $id)->first();
+            $configuraciones = ConfiguracionesTarjeta::where('user_tarjeta_id', $id)->first();
             if ($configuraciones != null) {
                 $configuraciones->update($request->all());
                 return response()->json([

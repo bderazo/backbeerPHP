@@ -20,7 +20,7 @@ class SocialesTarjetaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'tarjeta_id' => 'required|exists:user_tarjeta,id',
+                'user_tarjeta_id' => 'required|exists:user_tarjeta,id',
                 'estado' => 'nullable',
                 'text_label' => 'nullable',
                 'url_label' => 'nullable',
@@ -35,7 +35,7 @@ class SocialesTarjetaController extends Controller
                 ], 422);
             } else {
                 $sociales = SocialesTarjeta::create([
-                    'tarjeta_id' => $request->tarjeta_id,
+                    'user_tarjeta_id' => $request->user_tarjeta_id,
                     'estado' => true,
                     'text_label' => $request->text_label,
                     'url_label' => $request->url_label,
@@ -67,7 +67,7 @@ class SocialesTarjetaController extends Controller
     public function actualizarSocialesTarjeta(Request $request, $id)
     {
         try {
-            $sociales = SocialesTarjeta::where('tarjeta_id', $id)->first();
+            $sociales = SocialesTarjeta::where('user_tarjeta_id', $id)->first();
             if ($sociales != null) {
                 $sociales->update($request->all());
                 return response()->json([
