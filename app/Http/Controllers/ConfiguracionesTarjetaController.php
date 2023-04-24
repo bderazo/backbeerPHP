@@ -22,8 +22,8 @@ class ConfiguracionesTarjetaController extends Controller
             $validator = Validator::make($request->all(), [
                 'tarjeta_id' => 'required|exists:user_tarjeta,id',
                 'estado' => 'nullable',
-                'text_label' => 'required',
-                'flag_value' => 'required',
+                'text_label' => 'nullable',
+                'flag_value' => 'nullable',
             ]);
             if ($validator->fails()) {
                 return response()->json([

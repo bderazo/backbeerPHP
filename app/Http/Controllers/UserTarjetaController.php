@@ -27,13 +27,13 @@ class UserTarjetaController extends Controller
                 'img_perfil' => 'nullable',
                 'img_portada' => 'nullable',
                 'nombre' => 'required',
-                'profesion' => 'required',
-                'empresa' => 'required',
-                'acreditaciones' => 'required',
+                'profesion' => 'nullable',
+                'empresa' => 'nullable',
+                'acreditaciones' => 'nullable',
                 'telefono' => 'required',
-                'direccion' => 'required',
-                'correo' => 'required|unique:user_tarjeta,correo',
-                'sitio_web' => 'required',
+                'direccion' => 'nullable',
+                'correo' => 'nullable',
+                'sitio_web' => 'nullable',
             ]);
             if ($validator->fails()) {
                 return response()->json([

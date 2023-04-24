@@ -19,8 +19,8 @@ return new class extends Migration {
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
             $table->integer('estado');
-            $table->string('text_label');
-            $table->string('flag_value');
+            $table->string('text_label')->nullable();
+            $table->string('flag_value')->nullable();
             $table->timestamps();
         });
     }

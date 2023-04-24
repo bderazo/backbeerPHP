@@ -22,10 +22,10 @@ class SocialesTarjetaController extends Controller
             $validator = Validator::make($request->all(), [
                 'tarjeta_id' => 'required|exists:user_tarjeta,id',
                 'estado' => 'nullable',
-                'text_label' => 'required',
-                'url_label' => 'required',
-                'tipo_social' => 'required',
-                'icon_social' => 'required',
+                'text_label' => 'nullable',
+                'url_label' => 'nullable',
+                'tipo_social' => 'nullable',
+                'icon_social' => 'nullable',
             ]);
             if ($validator->fails()) {
                 return response()->json([

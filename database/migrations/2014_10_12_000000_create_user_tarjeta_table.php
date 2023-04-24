@@ -23,16 +23,16 @@ return new class extends Migration {
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
             $table->integer('estado');
-            $table->string('img_perfil');
-            $table->string('img_portada');
+            $table->string('img_perfil')->nullable();
+            $table->string('img_portada')->nullable();
             $table->string('nombre');
-            $table->string('profesion');
-            $table->string('empresa');
-            $table->string('acreditaciones');
+            $table->string('profesion')->nullable();
+            $table->string('empresa')->nullable();
+            $table->string('acreditaciones')->nullable();
             $table->string('telefono');
-            $table->string('direccion');
-            $table->string('correo')->unique();
-            $table->string('sitio_web');
+            $table->string('direccion')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('sitio_web')->nullable();
             $table->timestamps();
         });
     }

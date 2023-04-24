@@ -19,10 +19,10 @@ return new class extends Migration {
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
             $table->integer('estado');
-            $table->string('text_label');
-            $table->string('url_label');
-            $table->string('tipo_social');
-            $table->string('icon_social');
+            $table->string('text_label')->nullable();
+            $table->string('url_label')->nullable();
+            $table->string('tipo_social')->nullable();
+            $table->string('icon_social')->nullable();
             $table->timestamps();
         });
     }
