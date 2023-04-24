@@ -16,14 +16,13 @@ class SocialesTarjeta extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'tarjeta_id',
+        'user_tarjeta_id',
         'estado',
         'text_label',
         'url_label',
         'tipo_social',
         'icon_social',
     ];
-
 
     public function tarjeta_id(): BelongsTo
     {

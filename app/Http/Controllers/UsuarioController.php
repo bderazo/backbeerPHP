@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contacto;
 use App\Models\TipoUsuario;
 use App\Models\Usuario;
-use App\Models\UsuarioClave;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 

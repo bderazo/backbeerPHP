@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tipo_comercio', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->enum('nombre_tipo',['MAYOR','MENOR','ELECTRONICO','INTERNACIONAL','INFORMAL','JUSTO','INTERNO','ESPECIALIZADO']);
+            $table->enum('nombre_tipo',['RESTAURANTE', 'PASTELERIA']);
             $table->string('codigo');
             $table->string('extra_data');
         });

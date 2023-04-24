@@ -49,22 +49,27 @@ Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
     Route::post('comercio/listar', 'listarAllComercios');
+    Route::post('tipo/comercio/listar', 'listarTipoComercios');
 });
 
 
 //TARJETA DE USUARIO
 Route::controller(UserTarjetaController::class)->group(function () {
     Route::post('usuario/tarjeta/crear', 'crearUserTarjeta');
+    Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
+    Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
 });
 
 //SOCIALES DE TARJETA DE USUARIO
 Route::controller(SocialesTarjetaController::class)->group(function () {
     Route::post('tarjeta/sociales/crear', 'crearSocialesTarjeta');
+    Route::post('tarjeta/sociales/actualizar/{id}', 'actualizarSocialesTarjeta');
 });
 
 //CONFIGURACIONES DE TARJETA DE USUARIO
 Route::controller(ConfiguracionesTarjetaController::class)->group(function () {
     Route::post('tarjeta/configuraciones/crear', 'crearConfiguracionesTarjeta');
+    Route::post('tarjeta/configuraciones/actualizar/{id}', 'actualizarConfiguracionesTarjeta');
 });
 
 

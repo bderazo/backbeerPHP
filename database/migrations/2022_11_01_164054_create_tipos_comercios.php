@@ -18,52 +18,16 @@ return new class extends Migration
         DB::table('tipo_comercio')->insert([
             [
                 'id'=>Str::uuid(),
-                'nombre_tipo'=>'MAYOR',
+                'nombre_tipo'=>'RESTAURANTE',
                 'extra_data'=>'false',
-                'codigo'=>'MA01'
+                'codigo'=>'RE01'
             ],
             [
                 'id'=>Str::uuid(),
-                'nombre_tipo'=>'MENOR',
+                'nombre_tipo'=>'PASTELERIA',
                 'extra_data'=>'false',
-                'codigo'=>'ME02' 
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'ELECTRONICO',
-                'extra_data'=>'false',
-                'codigo'=>'EL03' 
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'INTERNACIONAL',
-                'extra_data'=>'false',
-                'codigo'=>'IN04' 
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'INFORMAL',
-                'extra_data'=>'false',
-                'codigo'=>'IN05' 
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'JUSTO',
-                'extra_data'=>'false',
-                'codigo'=>'JU06'
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'INTERNO',
-                'extra_data'=>'false',
-                'codigo'=>'IN07' 
-            ],
-            [
-                'id'=>Str::uuid(),
-                'nombre_tipo'=>'ESPECIALIZADO',
-                'extra_data'=>'false',
-                'codigo'=>'ES08' 
-            ],
+                'codigo'=>'PA02' 
+            ]
         ]);
     }
 

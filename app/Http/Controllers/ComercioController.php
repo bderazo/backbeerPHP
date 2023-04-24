@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comercio;
+use App\Models\TipoComercio;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -196,6 +197,32 @@ class ComercioController extends Controller
                     'status' => 200,
                     'message' => 'No existen entidades comerciales',
                     'data' => $lst_comercios
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
+
+    public function listarTipoComercios()
+    {
+        try {
+            $tipo_comercios = TipoComercio::all();
+            if ($tipo_comercios != null) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Lista de tipo de comercios. ',
+                    'data' => $tipo_comercios
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No existen tipo de comercios',
+                    'data' => $tipo_comercios
                 ]);
             }
         } catch (\Throwable $th) {

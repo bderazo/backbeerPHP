@@ -46,12 +46,12 @@ class UserTarjeta extends Model
 
     public function socialesTarjeta(): HasMany
     {
-        return $this->hasMany(ConfiguracionesTarjeta::class);
+        return $this->hasMany(SocialesTarjeta::class);
     }
 
     public function configuracionesTarjeta(): HasMany
     {
-        return $this->hasMany(SocialesTarjeta::class);
+        return $this->hasMany(ConfiguracionesTarjeta::class);
     }
 
     /**

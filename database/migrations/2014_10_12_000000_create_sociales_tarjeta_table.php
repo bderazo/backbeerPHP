@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('sociales_tarjeta', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('tarjeta_id')
+            $table->foreignUuid('user_tarjeta_id')
                 ->constrained('user_tarjeta')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();

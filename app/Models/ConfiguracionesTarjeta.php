@@ -16,7 +16,7 @@ class ConfiguracionesTarjeta extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'tarjeta_id',
+        'user_tarjeta_id',
         'estado',
         'text_label',
         'flag_value',

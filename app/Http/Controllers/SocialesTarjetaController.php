@@ -64,6 +64,39 @@ class SocialesTarjetaController extends Controller
         }
     }
 
+    public function actualizarSocialesTarjeta(Request $request, $id)
+    {
+        try {
+            $sociales = SocialesTarjeta::where('tarjeta_id', $id)->first();
+            if ($sociales != null) {
+                $sociales->update($request->all());
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Información social de tarjeta actualizada correctamente.',
+                    'data' => $sociales
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No se encontro la informacion social indicada.',
+                    'data' => null
+                ], 200);
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+
     // public function verComercio($id)
     // {
     //     try {
@@ -88,39 +121,6 @@ class SocialesTarjetaController extends Controller
     //             ], 422);
     //         }
 
-    //     } catch (AuthorizationException $th) {
-    //         return response()->json([
-    //             'status' => $th->getCode(),
-    //             'message' => 'No autorizado!.',
-    //             'data' => $th->getMessage()
-    //         ], 401);
-    //     } catch (Exception $e) {
-    //         return response()->json([
-    //             'status' => $e->getCode(),
-    //             'message' => 'Ocurrio un error!.',
-    //             'data' => $e->getMessage()
-    //         ], 400);
-    //     }
-    // }
-
-    // public function actualizarComercio(Request $request, $id)
-    // {
-    //     try {
-    //         $comercio = Comercio::find($id);
-    //         if ($comercio != null) {
-    //             $comercio->update($request->all());
-    //             return response()->json([
-    //                 'status' => 200,
-    //                 'message' => 'Información comercio actualizada correctamente.',
-    //                 'data' => $comercio
-    //             ], 200);
-    //         } else {
-    //             return response()->json([
-    //                 'status' => 200,
-    //                 'message' => 'No se encontro el comercio indicado.',
-    //                 'data' => null
-    //             ], 200);
-    //         }
     //     } catch (AuthorizationException $th) {
     //         return response()->json([
     //             'status' => $th->getCode(),
