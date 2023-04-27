@@ -12,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class PagoTarjetas extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'tarjetas_comercio';
+    protected $table = 'pago_tarjetas';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'usuarios_id',
+        'usuario_id',
         'estado',
         'forma_pago',
         'valor',
@@ -25,6 +25,12 @@ class PagoTarjetas extends Model
         'adjuntos',
         'tipo_plan'
     ];
+
+    public function usuario_id(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'id');
+
+    }
 
     public function planTarjetas(): HasMany
     {

@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('pago_tarjetas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('usuarios_id')
+            $table->foreignUuid('usuario_id')
                 ->constrained('usuarios')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();

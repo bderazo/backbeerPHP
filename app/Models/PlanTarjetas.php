@@ -16,7 +16,7 @@ class PlanTarjetas extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'usuarios_id',
+        'usuario_id',
         'user_tarjeta_id', 
         'estado',
         'detalle',
@@ -25,7 +25,17 @@ class PlanTarjetas extends Model
         'pago_tarjetas_id'
     ];
 
-    public function tarjeta_id(): BelongsTo
+    public function usuario_id(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'id');
+
+    }
+    public function user_tarjeta_id(): BelongsTo
+    {
+        return $this->belongsTo(UserTarjeta::class, 'id');
+
+    }
+    public function pago_tarjetas_id(): BelongsTo
     {
         return $this->belongsTo(PagoTarjetas::class, 'id');
 

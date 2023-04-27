@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class PlanTarjetasComercio extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'tarjetas_comercio';
+    protected $table = 'plan_tarjetas_comercio';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
@@ -24,10 +24,21 @@ class PlanTarjetasComercio extends Model
         'pago_tarjetas_id'
     ];
     
-    public function tarjeta_id(): BelongsTo
+    public function comercio_id(): BelongsTo
+    {
+        return $this->belongsTo(Comercio::class, 'id');
+
+    }
+
+    public function pago_tarjetas_id(): BelongsTo
     {
         return $this->belongsTo(PagoTarjetas::class, 'id');
 
+    }
+
+    public function tarjetasComercio(): HasMany
+    {
+        return $this->hasMany(TarjetasComercio::class);
     }
     
     /**

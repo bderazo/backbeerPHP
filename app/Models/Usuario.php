@@ -40,6 +40,16 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(UserTarjeta::class);
     }
 
+    public function pagoTarjetas(): HasMany
+    {
+        return $this->hasMany(PagoTarjetas::class);
+    }
+
+    public function planTarjetas(): HasMany
+    {
+        return $this->hasMany(PlanTarjetas::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

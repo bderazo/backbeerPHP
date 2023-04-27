@@ -23,6 +23,18 @@ class TarjetasComercio extends Model
         'estado'
     ];
 
+    public function plan_tarjetas_comercio_id(): BelongsTo
+    {
+        return $this->belongsTo(PlanTarjetasComercio::class, 'id');
+
+    }
+
+    public function user_tarjeta_id(): BelongsTo
+    {
+        return $this->belongsTo(UserTarjeta::class, 'id');
+
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

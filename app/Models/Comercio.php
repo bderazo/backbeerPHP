@@ -40,6 +40,11 @@ class Comercio extends Model
         return $this->hasMany(UserTarjeta::class);
     }
 
+    public function planTarjetasComercio(): HasMany
+    {
+        return $this->hasMany(PlanTarjetasComercio::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

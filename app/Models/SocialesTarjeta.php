@@ -24,7 +24,7 @@ class SocialesTarjeta extends Model
         'icon_social',
     ];
 
-    public function tarjeta_id(): BelongsTo
+    public function user_tarjeta_id(): BelongsTo
     {
         return $this->belongsTo(UserTarjeta::class, 'id');
 

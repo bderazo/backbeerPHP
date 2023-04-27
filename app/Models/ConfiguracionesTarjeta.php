@@ -23,7 +23,7 @@ class ConfiguracionesTarjeta extends Model
     ];
 
 
-    public function tarjeta_id(): BelongsTo
+    public function user_tarjeta_id(): BelongsTo
     {
         return $this->belongsTo(UserTarjeta::class, 'id');
 
