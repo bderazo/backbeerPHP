@@ -3,56 +3,28 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
-use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
+class Permisos extends Model
 {
-    use HasFactory, Uuid, Notifiable;
-    protected $table = 'usuarios';
+    use HasFactory,Uuid;
+    protected $table = 'permisos';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'nombres',
-        'apellidos',
-        'correo',
-        'password',
-        'rol',
-        'identificacion',
-        'registrado_por',
+        'nombre',
+        'codigo',
+        'descripcion',
+        'extra_data'
     ];
-
-    protected $hidden = [
-        'password',
-
-
-    ];
-
-    public function userTarjeta(): HasMany
-    {
-        return $this->hasMany(UserTarjeta::class);
-    }
-
-    public function pagoTarjetas(): HasMany
-    {
-        return $this->hasMany(PagoTarjetas::class);
-    }
 
     public function usuarioPermiso(): HasMany
     {
         return $this->hasMany(UsuarioPermiso::class);
-    }
-
-    public function planTarjetas(): HasMany
-    {
-        return $this->hasMany(PlanTarjetas::class);
     }
 
     /**
