@@ -9,54 +9,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class UserTarjeta extends Model
+class PagoTarjetas extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'user_tarjeta';
+    protected $table = 'tarjetas_comercio';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'usuario_id',
-        'comercio_id',
+        'usuarios_id',
         'estado',
-        'img_perfil',
-        'img_portada',
-        'nombre',
-        'profesion',
-        'empresa',
-        'acreditaciones',
-        'telefono',
-        'direccion',
-        'correo',
-        'sitio_web'
+        'forma_pago',
+        'valor',
+        'descripcion',
+        'observaciones',
+        'adjuntos',
+        'tipo_plan'
     ];
 
-
-    public function usuario_id(): BelongsTo
+    public function planTarjetas(): HasMany
     {
-        return $this->belongsTo(Usuario::class, 'id');
-
+        return $this->hasMany(PlanTarjetas::class);
     }
 
-    public function comercio_id(): BelongsTo
+    public function planTarjetasComercio(): HasMany
     {
-        return $this->belongsTo(Comercio::class, 'id');
-
-    }
-
-    public function socialesTarjeta(): HasMany
-    {
-        return $this->hasMany(SocialesTarjeta::class);
-    }
-
-    public function configuracionesTarjeta(): HasMany
-    {
-        return $this->hasMany(ConfiguracionesTarjeta::class);
-    }
-
-    public function tarjetasComercio(): HasMany
-    {
-        return $this->hasMany(TarjetasComercio::class);
+        return $this->hasMany(PlanTarjetasComercio::class);
     }
 
     /**

@@ -12,19 +12,24 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('tarjetas_comercio', function (Blueprint $table) {
+        Schema::create('plan_tarjetas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('plan_tarjetas_comercio_id')
-                ->constrained('plan_tarjetas_comercio')
+            $table->foreignUuid('usuarios_id')
+                ->constrained('usuarios')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->foreignUuid('user_tarjeta_id')->nullable()
+            $table->foreignUuid('user_tarjeta_id')
                 ->constrained('user_tarjeta')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->string('observaciones');
-            $table->string('detalle')->nullable();
             $table->integer('estado')->nullable();
+            $table->string('detalle')->nullable();
+            $table->string('precio')->nullable();
+            $table->string('tipo_tarjeta');
+            $table->foreignUuid('pago_tarjetas_id')
+                ->nullable()->constrained('pago_tarjetas')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
             $table->timestamps();
         });
     }
@@ -36,6 +41,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('tarjetas_comercio');
+        Schema::dropIfExists('plan_tarjetas');
     }
 };

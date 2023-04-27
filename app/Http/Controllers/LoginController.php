@@ -33,10 +33,11 @@ class LoginController extends Controller
                 ], Response::HTTP_UNAUTHORIZED);
             } else {
                 $user = JWTAuth::user();
+                $usuario = Usuario::with('userTarjeta')->find($user->id);
                 return response()->json([
                     'status' => 200,
                     'authorisation' => [
-                        'data' => $user,
+                        'data' => $usuario,
                         'token' => $token,
                         'type' => 'bearer',
                         'expires_in' => (auth('api')->factory()->getTTL()) / 60 . ' horas'

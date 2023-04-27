@@ -9,56 +9,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class UserTarjeta extends Model
+class PlanTarjetasComercio extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'user_tarjeta';
+    protected $table = 'tarjetas_comercio';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'usuario_id',
         'comercio_id',
         'estado',
-        'img_perfil',
-        'img_portada',
-        'nombre',
-        'profesion',
-        'empresa',
-        'acreditaciones',
-        'telefono',
-        'direccion',
-        'correo',
-        'sitio_web'
+        'detalle',
+        'precio',
+        'tipo_tarjeta',
+        'pago_tarjetas_id'
     ];
-
-
-    public function usuario_id(): BelongsTo
+    
+    public function tarjeta_id(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'id');
+        return $this->belongsTo(PagoTarjetas::class, 'id');
 
     }
-
-    public function comercio_id(): BelongsTo
-    {
-        return $this->belongsTo(Comercio::class, 'id');
-
-    }
-
-    public function socialesTarjeta(): HasMany
-    {
-        return $this->hasMany(SocialesTarjeta::class);
-    }
-
-    public function configuracionesTarjeta(): HasMany
-    {
-        return $this->hasMany(ConfiguracionesTarjeta::class);
-    }
-
-    public function tarjetasComercio(): HasMany
-    {
-        return $this->hasMany(TarjetasComercio::class);
-    }
-
+    
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

@@ -21,7 +21,7 @@ class UserTarjetaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|exists:usuarios,id',
+                'usuario_id' => 'required|exists:usuarios,id',
                 'comercio_id' => 'nullable|exists:comercio,id',
                 'estado' => 'nullable',
                 'img_perfil' => 'nullable',
@@ -43,7 +43,7 @@ class UserTarjetaController extends Controller
                 ], 422);
             } else {
                 $tarjeta = UserTarjeta::create([
-                    'user_id' => $request->user_id,
+                    'usuario_id' => $request->usuario_id,
                     'comercio_id' => $request->comercio_id,
                     'estado' => true,
                     'img_perfil' => $request->img_perfil,
