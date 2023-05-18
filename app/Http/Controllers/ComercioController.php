@@ -410,4 +410,34 @@ class ComercioController extends Controller
             ], 400);
         }
     }
+
+    public function listarMesasIdSucursal($id)
+    {
+        try {
+            $sucursales = Mesa::where('sucursal_id', $id)->get();
+
+            // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
+            // return response()->json($sucursales);
+
+            if ($sucursales != null) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Lista de mesas de la sucursal. ',
+                    'data' => $sucursales
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No existen mesas en esta sucursal',
+                    'data' => $sucursales
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
 }

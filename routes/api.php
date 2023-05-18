@@ -24,9 +24,6 @@ use Illuminate\Support\Facades\Route;
 // //LOGIN
 Route::controller(LoginController::class)->group(function () {
     Route::post('auth/login', 'login');
-    // Route::post('auth/password/recuperar-password', 'solicitarOlvidoClave');
-    // Route::post('auth/password/cambiar-password', 'cambiarClave')->name('password.reset');
-
 });
 
 //USUARIO
@@ -41,6 +38,7 @@ Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/crear', 'crearComercio');
     Route::post('sucursal/crear', 'crearSucursal');
     Route::post('mesa/crear', 'crearMesaSucursal');
+    Route::post('mesas/listar/{id}', 'listarMesasIdSucursal');
     Route::post('comercio/ver/{id}', 'verComercio');
     Route::post('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
