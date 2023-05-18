@@ -63,7 +63,7 @@ class ConfiguracionesTarjetaController extends Controller
     public function actualizarConfiguracionesTarjeta(Request $request, $id)
     {
         try {
-            $configuraciones = ConfiguracionesTarjeta::where('user_tarjeta_id', $id)->first();
+            $configuraciones = ConfiguracionesTarjeta::where('id', $id)->first();
             if ($configuraciones != null) {
                 $configuraciones->update($request->all());
                 return response()->json([

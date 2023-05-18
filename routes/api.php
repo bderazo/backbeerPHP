@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CategoriaProductoController;
 use App\Http\Controllers\ConfiguracionesTarjetaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SocialesTarjetaController;
 use App\Http\Controllers\UserTarjetaController;
 use App\Http\Controllers\UsuarioController;
@@ -32,26 +34,28 @@ Route::controller(UsuarioController::class)->group(function () {
     Route::post('usuario/crear', 'crearUsuario');
     Route::post('usuario/ver/{usuario}', 'verUsuario');
     Route::post('usuario/listar', 'listarUsuarios');
-    // Route::put('usuario/actualizar/{id}', 'actualizarUsuario');
-    // Route::delete('usuario/eliminar/{id}', 'eliminarUsuario');
-    // Route::put('usuario/password/cambiar', 'cambiarPassword');
-    // Route::post('usuario/entidad/crear', 'crearUsuarioEntidad');
-    // Route::put('usuario/entidad/actualizar/{id}', 'actualizarUsuarioEntidad');
-    // Route::put('usuario/perfil/actualizar', 'actualizarPerfil');
-    // Route::get('usuario/buscar', 'buscarUsuarioCedula');
-    // Route::get('usuario/entidad/buscar', 'buscarUsuarioCedulaEntidad');
 });
 
 //COMERCIO
 Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/crear', 'crearComercio');
+    Route::post('sucursal/crear', 'crearSucursal');
+    Route::post('mesa/crear', 'crearMesaSucursal');
     Route::post('comercio/ver/{id}', 'verComercio');
     Route::post('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
-    Route::post('comercio/listar', 'listarAllComercios');
+    Route::post('comercio/listar/todos', 'listarAllComercios');
+    Route::post('sucursal/listar/{id}', 'listarSucursalesIdComercio');
+    Route::post('comercio/listar', 'listarComercios'); //paginado de 10 en 10
     Route::post('tipo/comercio/listar', 'listarTipoComercios');
 });
 
+//CATEGORIAS PRODUCTO
+Route::controller(CategoriaProductoController::class)->group(function () {
+    Route::post('categoria/producto/crear', 'crearCategoria');
+    Route::post('categoria/producto/ver/{id}', 'verCategoria');
+    Route::post('categoria/producto/listar', 'listarAllCategorias');
+});
 
 //TARJETA DE USUARIO
 Route::controller(UserTarjetaController::class)->group(function () {
@@ -72,5 +76,8 @@ Route::controller(ConfiguracionesTarjetaController::class)->group(function () {
     Route::post('tarjeta/configuraciones/actualizar/{id}', 'actualizarConfiguracionesTarjeta');
 });
 
-
-
+//PRODUCTO
+Route::controller(ProductoController::class)->group(function () {
+    Route::post('producto/crear', 'crearProducto');
+    Route::post('productos/listar/todos', 'listarAllProductos');
+});

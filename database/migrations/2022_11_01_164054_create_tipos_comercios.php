@@ -24,9 +24,15 @@ return new class extends Migration
             ],
             [
                 'id'=>Str::uuid(),
-                'nombre_tipo'=>'PASTELERIA',
+                'nombre_tipo'=>'HOTELERIA',
                 'extra_data'=>'false',
                 'codigo'=>'PA02' 
+            ],
+            [
+                'id'=>Str::uuid(),
+                'nombre_tipo'=>'RETAIL',
+                'extra_data'=>'false',
+                'codigo'=>'RE03' 
             ]
         ]);
     }

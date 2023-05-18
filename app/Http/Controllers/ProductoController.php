@@ -2,30 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SocialesTarjeta;
+use App\Models\Producto;
+use App\Models\TipoComercio;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class SocialesTarjetaController extends Controller
+class ProductoController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api');
     }
 
-    public function crearSocialesTarjeta(Request $request)
+    public function crearProducto(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_tarjeta_id' => 'required|exists:user_tarjeta,id',
+                'comercio_id' => 'required|exists:comercio,id',
+                'nombre' => 'required',
+                'descripcion' => 'required',
+                'tipo_producto' => 'required',
+                'categoria_producto_id' => 'required|exists:categoria_producto,id',
                 'estado' => 'nullable',
-                'text_label' => 'nullable',
-                'url_label' => 'nullable',
-                'tipo_social' => 'nullable',
-                'icon_social' => 'nullable',
+                'codigo_barras' => 'required',
+                'tipo_impuesto' => 'required',
+                'registrado_por' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -34,18 +38,21 @@ class SocialesTarjetaController extends Controller
                     'data' => $validator->errors()
                 ], 422);
             } else {
-                $sociales = SocialesTarjeta::create([
-                    'user_tarjeta_id' => $request->user_tarjeta_id,
+                $producto = Producto::create([
+                    'comercio_id' => $request->comercio_id,
+                    'nombre' => $request->nombre,
+                    'descripcion' => $request->descripcion,
+                    'tipo_producto' => $request->tipo_producto,
+                    'categoria_producto_id' => $request->categoria_producto_id,
                     'estado' => true,
-                    'text_label' => $request->text_label,
-                    'url_label' => $request->url_label,
-                    'tipo_social' => $request->tipo_social,
-                    'icon_social' => $request->icon_social,
+                    'codigo_barras' => $request->codigo_barras,
+                    'tipo_impuesto' => $request->tipo_impuesto,
+                    'registrado_por' => $request->registrado_por,
                 ]);
                 return response()->json([
                     'status' => 201,
-                    'message' => 'Sociales de Tarjeta creado correctamente.',
-                    'data' => $sociales
+                    'message' => 'Producto creado correctamente.',
+                    'data' => $producto
                 ], 201);
             }
 
@@ -64,36 +71,29 @@ class SocialesTarjetaController extends Controller
         }
     }
 
-    public function actualizarSocialesTarjeta(Request $request, $id)
+    public function listarAllProductos()
     {
         try {
-            $sociales = SocialesTarjeta::where('id', $id)->first();
-            if ($sociales != null) {
-                $sociales->update($request->all());
+            $lst_comercios = Producto::all()->where('estado', true);
+            if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Información social de tarjeta actualizada correctamente.',
-                    'data' => $sociales
-                ], 200);
+                    'message' => 'Lista de productos por entidad comercial. ',
+                    'data' => $lst_comercios
+                ]);
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No se encontro la informacion social indicada.',
-                    'data' => null
-                ], 200);
+                    'message' => 'No existen productos por entidad comercial',
+                    'data' => $lst_comercios
+                ]);
             }
-        } catch (AuthorizationException $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => 'Ocurrio un error!. ',
                 'data' => $th->getMessage()
-            ], 401);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
-                'data' => $e->getMessage()
-            ], 400);
+            ], $th->getCode());
         }
     }
 
@@ -121,6 +121,39 @@ class SocialesTarjetaController extends Controller
     //             ], 422);
     //         }
 
+    //     } catch (AuthorizationException $th) {
+    //         return response()->json([
+    //             'status' => $th->getCode(),
+    //             'message' => 'No autorizado!.',
+    //             'data' => $th->getMessage()
+    //         ], 401);
+    //     } catch (Exception $e) {
+    //         return response()->json([
+    //             'status' => $e->getCode(),
+    //             'message' => 'Ocurrio un error!.',
+    //             'data' => $e->getMessage()
+    //         ], 400);
+    //     }
+    // }
+
+    // public function actualizarComercio(Request $request, $id)
+    // {
+    //     try {
+    //         $comercio = Comercio::find($id);
+    //         if ($comercio != null) {
+    //             $comercio->update($request->all());
+    //             return response()->json([
+    //                 'status' => 200,
+    //                 'message' => 'Información comercio actualizada correctamente.',
+    //                 'data' => $comercio
+    //             ], 200);
+    //         } else {
+    //             return response()->json([
+    //                 'status' => 200,
+    //                 'message' => 'No se encontro el comercio indicado.',
+    //                 'data' => null
+    //             ], 200);
+    //         }
     //     } catch (AuthorizationException $th) {
     //         return response()->json([
     //             'status' => $th->getCode(),
@@ -171,21 +204,21 @@ class SocialesTarjetaController extends Controller
     //     }
     // }
 
-    // public function listarAllComercios()
+    // public function listarTipoComercios()
     // {
     //     try {
-    //         $lst_comercios = Comercio::all()->where('estado', true);
-    //         if ($lst_comercios != null) {
+    //         $tipo_comercios = TipoComercio::all();
+    //         if ($tipo_comercios != null) {
     //             return response()->json([
     //                 'status' => 200,
-    //                 'message' => 'Lista de entidades comerciales. ',
-    //                 'data' => $lst_comercios
+    //                 'message' => 'Lista de tipo de comercios. ',
+    //                 'data' => $tipo_comercios
     //             ]);
     //         } else {
     //             return response()->json([
     //                 'status' => 200,
-    //                 'message' => 'No existen entidades comerciales',
-    //                 'data' => $lst_comercios
+    //                 'message' => 'No existen tipo de comercios',
+    //                 'data' => $tipo_comercios
     //             ]);
     //         }
     //     } catch (\Throwable $th) {
