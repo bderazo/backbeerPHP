@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+// use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UserTarjeta extends Model
 {
-    use HasFactory,Uuid;
+    // use HasFactory,Uuid;
     protected $table = 'user_tarjeta';
     public $incrementing = false;
-    protected $keyType = 'uuid';
+    // protected $keyType = 'uuid';
     protected $fillable = [
         'usuario_id',
         'comercio_id',

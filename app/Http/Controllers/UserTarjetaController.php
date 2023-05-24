@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class UserTarjetaController extends Controller
 {
@@ -20,16 +21,16 @@ class UserTarjetaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'usuario_id' => 'required|exists:usuarios,id',
+                'usuario_id' => 'nullable|exists:usuarios,id',
                 'comercio_id' => 'nullable|exists:comercio,id',
                 'estado' => 'nullable',
                 'img_perfil' => 'nullable',
                 'img_portada' => 'nullable',
-                'nombre' => 'required',
+                'nombre' => 'nullable',
                 'profesion' => 'nullable',
                 'empresa' => 'nullable',
                 'acreditaciones' => 'nullable',
-                'telefono' => 'required',
+                'telefono' => 'nullable',
                 'direccion' => 'nullable',
                 'correo' => 'nullable',
                 'sitio_web' => 'nullable',
@@ -41,7 +42,7 @@ class UserTarjetaController extends Controller
                     'data' => $validator->errors()
                 ], 422);
             } else {
-                $tarjeta = UserTarjeta::create([
+                $tarjeta = new UserTarjeta([
                     'usuario_id' => $request->usuario_id,
                     'comercio_id' => $request->comercio_id,
                     'estado' => true,
@@ -56,6 +57,8 @@ class UserTarjetaController extends Controller
                     'correo' => $request->correo,
                     'sitio_web' => $request->sitio_web,
                 ]);
+                $tarjeta->id = Str::random(8);
+                $tarjeta->save();
                 return response()->json([
                     'status' => 201,
                     'message' => 'Tarjeta de usuario creada correctamente.',
@@ -74,6 +77,47 @@ class UserTarjetaController extends Controller
                 'message' => 'Ocurrio un error!.',
                 'data' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    public function cargar(Request $request)
+    {
+        try {
+            $cantidadRegistros = $request->input('cantidad'); // Obtener el valor de cantidad desde el request
+
+            $idsCreados = []; // Array para almacenar los IDs creados
+
+            for ($i = 0; $i < $cantidadRegistros; $i++) {
+                $tarjeta = new UserTarjeta([
+                    'usuario_id' => $request->usuario_id,
+                    'comercio_id' => $request->comercio_id,
+                    'estado' => true,
+                    'img_perfil' => $request->img_perfil,
+                    'img_portada' => $request->img_portada,
+                    'nombre' => $request->nombre,
+                    'profesion' => $request->profesion,
+                    'empresa' => $request->empresa,
+                    'acreditaciones' => json_encode($request->acreditaciones),
+                    'telefono' => $request->telefono,
+                    'direccion' => $request->direccion,
+                    'correo' => $request->correo,
+                    'sitio_web' => $request->sitio_web,
+                ]);
+
+                $tarjeta->id = Str::random(8); // Genera una cadena aleatoria de 8 caracteres
+
+                $tarjeta->save();
+
+                $idsCreados[] = $tarjeta->id; // Almacenar el ID creado en el array
+            }
+
+            return response()->json(['ids' => $idsCreados]);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'No tiene permisos!.',
+                'data' => $e->getMessage(),
+            ], 401);
         }
     }
 
@@ -114,7 +158,13 @@ class UserTarjetaController extends Controller
     {
         try {
             if (Str::isUuid($id)) {
-                $tarjeta = UserTarjeta::with('socialesTarjeta')->with('configuracionesTarjeta')->find($id);
+                $tarjeta = UserTarjeta::with([
+                    'socialesTarjeta' => function ($query) {
+                        $query->where('estado', 1);
+                    },
+                    'configuracionesTarjeta'
+                ])
+                    ->find($id);
                 return ($tarjeta != null) ?
                     response()->json([
                         'status' => 200,
