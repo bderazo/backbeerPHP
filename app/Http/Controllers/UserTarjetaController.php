@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArrayExport;
 use App\Models\UserTarjeta;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserTarjetaController extends Controller
 {
@@ -110,8 +112,8 @@ class UserTarjetaController extends Controller
 
                 $idsCreados[] = $tarjeta->id; // Almacenar el ID creado en el array
             }
-
-            return response()->json(['ids' => $idsCreados]);
+            return Excel::download(new ArrayExport($idsCreados), 'codigos.xlsx');
+            // return response()->json($idsCreados);
         } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 401,
