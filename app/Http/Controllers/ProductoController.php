@@ -72,7 +72,7 @@ class ProductoController extends Controller
     public function listarAllProductos()
     {
         try {
-            $lst_comercios = Producto::all()->where('estado', true);
+            $lst_comercios = Producto::with('comercio_id')->where('estado', true)->get();
             if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,
@@ -84,6 +84,36 @@ class ProductoController extends Controller
                     'status' => 200,
                     'message' => 'No existen productos por entidad comercial',
                     'data' => $lst_comercios
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
+
+    public function listarProductosIdComercio($id, Request $request)
+    {
+        try {
+            $sucursales = Producto::with(['comercio_id', 'categoria_producto_id'])->where('comercio_id', $id)->paginate(10);
+
+            // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
+            // return response()->json($sucursales);
+
+            if ($sucursales != null) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Lista de productos de la entidad comercial. ',
+                    'data' => $sucursales
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No existen productos en la entidad comercial',
+                    'data' => $sucursales
                 ]);
             }
         } catch (\Throwable $th) {

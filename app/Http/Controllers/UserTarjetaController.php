@@ -157,7 +157,7 @@ class UserTarjetaController extends Controller
     public function verTarjetaUser($id)
     {
         try {
-            if (Str::isUuid($id)) {
+            if ($id) {
                 $tarjeta = UserTarjeta::with([
                     'socialesTarjeta' => function ($query) {
                         $query->where('estado', 1);
@@ -195,6 +195,17 @@ class UserTarjetaController extends Controller
                 'message' => 'Ocurrio un error!.',
                 'data' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    public function verificarID($id)
+    {
+        $registro = UserTarjeta::find($id);
+
+        if ($registro) {
+            return response()->json(['existe' => true]);
+        } else {
+            return response()->json(['existe' => false]);
         }
     }
 }

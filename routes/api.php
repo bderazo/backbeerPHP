@@ -43,7 +43,8 @@ Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
     Route::post('comercio/listar/todos', 'listarAllComercios');
-    Route::post('sucursal/listar/{id}', 'listarSucursalesIdComercio');
+    Route::post('sucursal/listarAll/{id}', 'listarAllSucursalesIdComercio');
+    Route::post('sucursal/listar/{id}', 'listarSucursalesIdComercio'); //paginado de 10 en 10
     Route::post('comercio/listar', 'listarComercios'); //paginado de 10 en 10
     Route::post('tipo/comercio/listar', 'listarTipoComercios');
 });
@@ -61,6 +62,7 @@ Route::controller(UserTarjetaController::class)->group(function () {
     Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
     Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
     Route::post('usuario/tarjeta/cargar', 'cargar');
+    Route::post('verificar-id/{id}', 'verificarID');
 });
 
 //SOCIALES DE TARJETA DE USUARIO
@@ -79,4 +81,5 @@ Route::controller(ConfiguracionesTarjetaController::class)->group(function () {
 Route::controller(ProductoController::class)->group(function () {
     Route::post('producto/crear', 'crearProducto');
     Route::post('productos/listar/todos', 'listarAllProductos');
+    Route::post('productos/listar/{id}', 'listarProductosIdComercio'); //paginado de 10 en 10
 });

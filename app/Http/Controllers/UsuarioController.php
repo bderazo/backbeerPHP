@@ -112,41 +112,26 @@ class UsuarioController extends Controller
     public function listarUsuarios(Request $request)
     {
         try {
-            $request->merge([
-                'page' => $request->input('page', 0) + 1
-            ]);
-            $lst_usuarios = Usuario::get();
-            $perPage = 10; // Número de elementos por página
-            $page = request()->get('page', 1); // Número de página actual
-            $offset = ($page - 1) * $perPage; // Cálculo del offset
-
-            $lst_usuarios = collect($lst_usuarios)->forPage($page, $perPage); // Paginación de la colección
-
-            if ($lst_usuarios != null) {
+            $lst_comercios = Usuario::paginate(10);
+            if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Lista de Usuarios.',
-                    'data' => $lst_usuarios
+                    'message' => 'Lista de entidades comerciales. ',
+                    'data' => $lst_comercios
                 ]);
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No hay Usuarios registrados.',
-                    'data' => null
+                    'message' => 'No existen entidades comerciales',
+                    'data' => $lst_comercios
                 ]);
             }
-        } catch (AuthorizationException $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => 'Ocurrio un error!. ',
                 'data' => $th->getMessage()
-            ], 401);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
-                'data' => $e->getMessage()
-            ], 400);
+            ], $th->getCode());
         }
     }
 }

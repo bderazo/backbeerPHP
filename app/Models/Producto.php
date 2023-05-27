@@ -27,12 +27,12 @@ class Producto extends Model
 
     public function comercio_id(): BelongsTo
     {
-        return $this->belongsTo(Comercio::class, 'id');
+        return $this->belongsTo(Comercio::class, 'comercio_id');
     }
 
     public function categoria_producto_id(): BelongsTo
     {
-        return $this->belongsTo(CategoriaProducto::class, 'id');
+        return $this->belongsTo(CategoriaProducto::class, 'categoria_producto_id');
     }
 
     /**

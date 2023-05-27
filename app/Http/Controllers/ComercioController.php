@@ -324,10 +324,39 @@ class ComercioController extends Controller
         }
     }
 
-    public function listarSucursalesIdComercio($id)
+    public function listarAllSucursalesIdComercio($id)
     {
         try {
             $sucursales = Sucursal::where('comercio_id', $id)->get();
+
+            // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
+            // return response()->json($sucursales);
+
+            if ($sucursales != null) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Lista de sucursales de la entidad comercial. ',
+                    'data' => $sucursales
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No existen sucursales en la entidad comercial',
+                    'data' => $sucursales
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
+    public function listarSucursalesIdComercio($id, Request $request)
+    {
+        try {
+            $sucursales = Sucursal::where('comercio_id', $id)->paginate(10);
 
             // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
             // return response()->json($sucursales);
