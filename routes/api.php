@@ -80,6 +80,8 @@ Route::controller(ConfiguracionesTarjetaController::class)->group(function () {
 //PRODUCTO
 Route::controller(ProductoController::class)->group(function () {
     Route::post('producto/crear', 'crearProducto');
+    Route::post('/ingresar/productos', 'ingresarRegistros'); //carga masiva objeto json
     Route::post('productos/listar/todos', 'listarAllProductos');
     Route::post('productos/listar/{id}', 'listarProductosIdComercio'); //paginado de 10 en 10
+    Route::post('productos/categorias/listar', 'listarProductosIdComercioCategoria'); //paginado de 10 en 10
 });
