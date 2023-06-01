@@ -33,6 +33,11 @@ return new class extends Migration {
             $table->string('direccion')->nullable();
             $table->string('correo')->nullable();
             $table->string('sitio_web')->nullable();
+            $table->integer('wallet')->nullable();
+            $table->integer('clics_realizados')->nullable();
+            $table->integer('clics_guardar')->nullable();
+            $table->integer('clics_correo')->nullable();
+            $table->integer('clics_sitio_web')->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->string('url_label')->nullable();
             $table->string('tipo_social')->nullable();
             $table->string('icon_social')->nullable();
+            $table->integer('clics_realizados')->nullable();
             $table->timestamps();
         });
     }
