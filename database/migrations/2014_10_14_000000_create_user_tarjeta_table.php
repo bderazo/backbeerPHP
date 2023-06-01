@@ -25,11 +25,11 @@ return new class extends Migration {
             $table->integer('estado');
             $table->string('img_perfil')->nullable();
             $table->string('img_portada')->nullable();
-            $table->string('nombre');
+            $table->string('nombre')->nullable();
             $table->string('profesion')->nullable();
             $table->string('empresa')->nullable();
             $table->string('acreditaciones')->nullable();
-            $table->string('telefono');
+            $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
             $table->string('correo')->nullable();
             $table->string('sitio_web')->nullable();

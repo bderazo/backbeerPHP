@@ -61,6 +61,7 @@ Route::controller(UserTarjetaController::class)->group(function () {
     Route::post('usuario/tarjeta/crear', 'crearUserTarjeta');
     Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
     Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
+    Route::post('usuario/tarjeta/listar', 'listadoTarjetas');
     Route::post('usuario/tarjeta/cargar', 'cargar');
     Route::post('verificar-id/{id}', 'verificarID');
 });

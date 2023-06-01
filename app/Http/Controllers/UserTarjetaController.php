@@ -59,7 +59,7 @@ class UserTarjetaController extends Controller
                     'correo' => $request->correo,
                     'sitio_web' => $request->sitio_web,
                 ]);
-                $tarjeta->id = Str::random(8);
+                $tarjeta->id = 'EC' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT); // Genera una cadena aleatoria de 8 caracteres (EC+ 6 digitos)
                 $tarjeta->save();
                 return response()->json([
                     'status' => 201,
@@ -106,7 +106,7 @@ class UserTarjetaController extends Controller
                     'sitio_web' => $request->sitio_web,
                 ]);
 
-                $tarjeta->id = Str::random(8); // Genera una cadena aleatoria de 8 caracteres
+                $tarjeta->id = 'EC' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT); // Genera una cadena aleatoria de 8 caracteres (EC+ 6 digitos)
 
                 $tarjeta->save();
 
@@ -208,6 +208,36 @@ class UserTarjetaController extends Controller
             return response()->json(['existe' => true]);
         } else {
             return response()->json(['existe' => false]);
+        }
+    }
+
+    public function listadoTarjetas()
+    {
+        try {
+            $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id')->get();
+            return ($tarjetas != null) ?
+                response()->json([
+                    'status' => 200,
+                    'message' => 'Listado de tarjetas.',
+                    'data' => $tarjetas
+                ], 200) :
+                response()->json([
+                    'status' => 200,
+                    'message' => 'No existen tarjetas.',
+                    'data' => null
+                ], 200);
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
         }
     }
 }
