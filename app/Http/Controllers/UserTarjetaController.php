@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\dd;
 
 class UserTarjetaController extends Controller
 {
@@ -110,7 +111,11 @@ class UserTarjetaController extends Controller
 
                 $tarjeta->save();
 
-                $idsCreados[] = $tarjeta->id; // Almacenar el ID creado en el array
+                $url = 'https://onlytap.proatek.com/OnlyTap/Presentacion/';
+
+                $almacenar = $url .  $tarjeta->id;
+                // dd($almacenar);
+                $idsCreados[] = $almacenar; // Almacenar el ID creado en el array
             }
             return Excel::download(new ArrayExport($idsCreados), 'codigos.xlsx');
             // return response()->json($idsCreados);
