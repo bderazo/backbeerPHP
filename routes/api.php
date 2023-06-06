@@ -29,6 +29,8 @@ Route::controller(LoginController::class)->group(function () {
 //USUARIO
 Route::controller(UsuarioController::class)->group(function () {
     Route::post('usuario/crear', 'crearUsuario');
+    Route::post('usuario/entidad/crear', 'asignarUsuarioEntidad');
+    Route::post('usuario/sucursal/crear', 'asignarUsuarioSucursal');
     Route::post('usuario/ver/{usuario}', 'verUsuario');
     Route::post('usuario/listar', 'listarUsuarios');
 });

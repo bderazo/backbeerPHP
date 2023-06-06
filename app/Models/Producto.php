@@ -17,11 +17,12 @@ class Producto extends Model
         'comercio_id',
         'nombre',
         'descripcion',
-        'tipo_producto',
+        'tipo_producto_id',
         'categoria_producto_id',
         'estado',
         'codigo_barras',
         'tipo_impuesto',
+        'precio_compra',
         'registrado_por',
     ];
 
@@ -33,6 +34,11 @@ class Producto extends Model
     public function categoria_producto_id(): BelongsTo
     {
         return $this->belongsTo(CategoriaProducto::class, 'categoria_producto_id');
+    }
+
+    public function tipo_producto_id(): BelongsTo
+    {
+        return $this->belongsTo(TipoProducto::class, 'tipo_producto_id');
     }
 
     /**
@@ -54,5 +60,4 @@ class Producto extends Model
     {
         return [];
     }
-
 }

@@ -97,7 +97,7 @@ class ProductoController extends Controller
     public function listarProductosIdComercio($id, Request $request)
     {
         try {
-            $sucursales = Producto::with(['comercio_id', 'categoria_producto_id'])->where('comercio_id', $id)->paginate(10);
+            $sucursales = Producto::with(['comercio_id', 'categoria_producto_id', 'tipo_producto_id'])->where('comercio_id', $id)->paginate(10);
 
             // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
             // return response()->json($sucursales);
@@ -167,11 +167,54 @@ class ProductoController extends Controller
             ], $th->getCode());
         }
     }
+    public function listarProductosIdComercioTipo(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'negocio' => 'required|exists:comercio,id',
+                'categoria_id' => 'required|exists:categoria_producto,id',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $comercio_id = $request->input('negocio');
+                $categoria_id = $request->input('categoria_id');
+                $sucursales = Producto::with(['comercio_id', 'categoria_producto_id'])->where('comercio_id', $comercio_id)->where('categoria_producto_id', $categoria_id)->get();
+
+                // Haz algo con las sucursales obtenidas, como devolverlas como respuesta JSON
+                // return response()->json($sucursales);
+
+                if ($sucursales != null) {
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'Lista de productos de la entidad comercial por categoria. ',
+                        'data' => $sucursales
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'No existen productos en la entidad comercial por categoria',
+                        'data' => $sucursales
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
 
     public function ingresarRegistros(Request $request)
     {
         $registros = json_decode($request->getContent(), true);
-
+        
         foreach ($registros as $registro) {
             Producto::create($registro);
         }

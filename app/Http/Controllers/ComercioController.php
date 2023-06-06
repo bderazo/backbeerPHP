@@ -305,7 +305,7 @@ class ComercioController extends Controller
                 ]);
                 return response()->json([
                     'status' => 201,
-                    'message' => 'Sucursal creado correctamente.',
+                    'message' => 'Sucursal creada correctamente.',
                     'data' => $sucursal
                 ], 201);
             }
