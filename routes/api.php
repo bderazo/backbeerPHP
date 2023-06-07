@@ -24,6 +24,11 @@ use Illuminate\Support\Facades\Route;
 // //LOGIN
 Route::controller(LoginController::class)->group(function () {
     Route::post('auth/login', 'login');
+    Route::post('auth/password/cambiar-password', 'cambiarClave');
+    //onlytap
+    Route::post('auth/password/recuperar', 'sendResetLinkEmail');
+    //proatek
+    Route::post('auth/password/recuperarP', 'sendResetEmailLink');
 });
 
 //USUARIO
