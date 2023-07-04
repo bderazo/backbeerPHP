@@ -27,7 +27,6 @@ class UsuarioController extends Controller
                 'correo' => 'required|unique:usuarios,correo',
                 'password' => 'required',
                 'rol' => 'required',
-                'identificacion' => 'required|unique:usuarios,identificacion',
                 'registrado_por' => 'required'
             ]);
             if ($validator->fails()) {
