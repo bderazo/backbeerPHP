@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SocialesTarjeta extends Model
 {
-    use HasFactory,Uuid;
+    use HasFactory, Uuid;
     protected $table = 'sociales_tarjeta';
     public $incrementing = false;
     protected $keyType = 'uuid';
@@ -20,12 +20,12 @@ class SocialesTarjeta extends Model
         'url_label',
         'tipo_social',
         'icon_social',
+        'clics_realizados'
     ];
 
     public function user_tarjeta_id(): BelongsTo
     {
         return $this->belongsTo(UserTarjeta::class, 'id');
-
     }
 
     /**
@@ -47,5 +47,4 @@ class SocialesTarjeta extends Model
     {
         return [];
     }
-
 }

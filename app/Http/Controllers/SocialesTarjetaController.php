@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class SocialesTarjetaController extends Controller
 {
@@ -90,6 +91,72 @@ class SocialesTarjetaController extends Controller
             return response()->json([
                 'status' => $e->getCode(),
                 'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+    public function encontrarPorUrlLabel(Request $request)
+    {
+        try {
+            $registro = SocialesTarjeta::where('tipo_social', $request->url)->first();
+
+            // Verificar si se encontró el registro
+            if ($registro) {
+                $requestData = [
+                    'clics_realizados' => $request->clics_realizados
+                ];
+                return  $this->actualizarSocialesTarjeta(new Request($requestData), $registro->id);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No se encontró la información social indicada.',
+                    'data' => null
+                ], 200);
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrió un error.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function clicUrlLabel(Request $request)
+    {
+        try {
+            $registro = SocialesTarjeta::where('tipo_social', $request->url)->first();
+
+            // Verificar si se encontró el registro
+            if ($registro) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Numero de clics social.',
+                    'data' => $registro->clics_realizados
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'No se encontró la información social indicada.',
+                    'data' => null
+                ], 200);
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrió un error.',
                 'data' => $e->getMessage()
             ], 400);
         }

@@ -77,6 +77,8 @@ Route::controller(UserTarjetaController::class)->group(function () {
 Route::controller(SocialesTarjetaController::class)->group(function () {
     Route::post('tarjeta/sociales/crear', 'crearSocialesTarjeta');
     Route::post('tarjeta/sociales/actualizar/{id}', 'actualizarSocialesTarjeta');
+    Route::post('sociales/actualizar/label', 'encontrarPorUrlLabel');
+    Route::post('sociales/clic', 'clicUrlLabel');
 });
 
 //CONFIGURACIONES DE TARJETA DE USUARIO

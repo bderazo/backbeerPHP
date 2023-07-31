@@ -27,20 +27,23 @@ class UserTarjeta extends Model
         'telefono',
         'direccion',
         'correo',
-        'sitio_web'
+        'sitio_web',
+        'wallet',
+        'clics_realizados',
+        'clics_guardar',
+        'clics_correo',
+        'clics_sitio_web',
     ];
 
 
     public function usuario_id(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'id');
-
     }
 
     public function comercio_id(): BelongsTo
     {
         return $this->belongsTo(Comercio::class, 'id');
-
     }
 
     public function socialesTarjeta(): HasMany
@@ -82,5 +85,4 @@ class UserTarjeta extends Model
     {
         return [];
     }
-
 }
