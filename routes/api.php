@@ -24,19 +24,6 @@ Route::controller(LoginController::class)->group(function () {
 
 });
 
-<<<<<<< HEAD
-Route::group(['middleware' => ['cors']], function () {
-    Route::group([
-        'middleware' => 'api',
-        'prefix' => 'auth'
-    ], function ($router) {
-        Route::post('login', 'App\Http\Controllers\AuthController@login');
-        Route::post('logout', 'App\Http\Controllers\AuthController@logout');
-        Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
-        Route::post('me', 'App\Http\Controllers\AuthController@me');
-        Route::post('register', 'App\Http\Controllers\AuthController@register');
-    });
-=======
 //USUARIO
 Route::controller(UsuarioController::class)->group(function () {
     Route::post('usuario/crear', 'crearUsuario');
@@ -59,5 +46,4 @@ Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
     Route::post('comercio/listar', 'listarAllComercios');
->>>>>>> main
 });
