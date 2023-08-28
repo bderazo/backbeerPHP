@@ -118,13 +118,13 @@ class UsuarioController extends Controller
             if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Lista de entidades comerciales. ',
+                    'message' => 'Lista de usuarios. ',
                     'data' => $lst_comercios
                 ]);
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No existen entidades comerciales',
+                    'message' => 'No existen usuarios',
                     'data' => $lst_comercios
                 ]);
             }

@@ -8,10 +8,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\dd;
 
 class UserTarjetaController extends Controller
 {
@@ -210,7 +207,7 @@ class UserTarjetaController extends Controller
         $registro = UserTarjeta::find($id);
 
         if ($registro) {
-            return response()->json(['existe' => true]);
+            return response()->json(['existe' => true, 'data' => $registro]);
         } else {
             return response()->json(['existe' => false]);
         }
