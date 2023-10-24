@@ -212,11 +212,11 @@ class UserTarjetaController extends Controller
             return response()->json(['existe' => false]);
         }
     }
-
+//en esta consulta me gustaria solo consultar las tarjetas cuyo campo usuario_id no sea null?
     public function listadoTarjetas()
     {
         try {
-            $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id')->get();
+            $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id')->whereNotNull('usuario_id')->get();
             return ($tarjetas != null) ?
                 response()->json([
                     'status' => 200,

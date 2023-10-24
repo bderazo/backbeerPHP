@@ -8,6 +8,7 @@ use App\Http\Controllers\SocialesTarjetaController;
 use App\Http\Controllers\UserTarjetaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComercioController;
+use App\Http\Controllers\BeerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -94,4 +95,15 @@ Route::controller(ProductoController::class)->group(function () {
     Route::post('productos/listar/todos', 'listarAllProductos');
     Route::post('productos/listar/{id}', 'listarProductosIdComercio'); //paginado de 10 en 10
     Route::post('productos/categorias/listar', 'listarProductosIdComercioCategoria'); //paginado de 10 en 10
+});
+
+//TARJETA DE USUARIO
+Route::controller(BeerController::class)->group(function () {
+    Route::post('usuario/beer/crear', 'crearBeerCode');
+    Route::post('usuario/beer/consultar/{id}', 'verificarID');
+    // Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
+    // Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
+    // Route::post('usuario/tarjeta/listar', 'listadoTarjetas');
+    // Route::post('usuario/tarjeta/cargar', 'cargar');
+    // Route::post('verificar-id/{id}', 'verificarID');
 });
