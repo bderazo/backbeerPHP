@@ -8,47 +8,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Comercio extends Model
+class BeerRfid extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'comercio';
+    protected $table = 'beer_rfid';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'nombre_comercial',
-        'razon_social',
-        'ruc',
-        'direccion',
-        'telefono',
-        'whatsapp',
-        'correo',
-        'logo',
-        'sitio_web',
+        'usuario_id',
+        'cupo_max',
         'estado',
-        'tipo_comercio'
+        'tipo_usuario',
+        'tipo_sensor',
+        'codigo_sensor',
+        'usuario_registra',
     ];
 
 
-    public function tipo_comercio(): BelongsTo
+    public function usuario_id(): BelongsTo
     {
-        return $this->belongsTo(TipoComercio::class, 'tipo_comercio');
+        return $this->belongsTo(Usuario::class, 'id');
     }
 
-    public function userTarjeta(): HasMany
+    public function usuario_registra(): BelongsTo
     {
-        return $this->hasMany(UserTarjeta::class);
+        return $this->belongsTo(Usuario::class, 'id');
     }
 
-    public function planTarjetasComercio(): HasMany
+    public function venta(): HasMany
     {
-        return $this->hasMany(PlanTarjetasComercio::class);
+        return $this->hasMany(Venta::class);
     }
 
-    public function comercioMaquina(): HasMany
-    {
-        return $this->hasMany(ComercioMaquina::class);
-    }
-
+  
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -68,5 +60,4 @@ class Comercio extends Model
     {
         return [];
     }
-
 }

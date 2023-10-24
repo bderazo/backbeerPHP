@@ -6,47 +6,30 @@ use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Comercio extends Model
+class UsuarioPermiso extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'comercio';
+    protected $table = 'usuario_permiso';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'nombre_comercial',
-        'razon_social',
-        'ruc',
-        'direccion',
-        'telefono',
-        'whatsapp',
-        'correo',
-        'logo',
-        'sitio_web',
+        'usuario_id',
+        'permisos_id',
         'estado',
-        'tipo_comercio'
+        'registrado_por'
     ];
 
-
-    public function tipo_comercio(): BelongsTo
+    public function usuario_id(): BelongsTo
     {
-        return $this->belongsTo(TipoComercio::class, 'tipo_comercio');
+        return $this->belongsTo(Usuario::class, 'id');
+
     }
 
-    public function userTarjeta(): HasMany
+    public function permisos_id(): BelongsTo
     {
-        return $this->hasMany(UserTarjeta::class);
-    }
+        return $this->belongsTo(Permisos::class, 'id');
 
-    public function planTarjetasComercio(): HasMany
-    {
-        return $this->hasMany(PlanTarjetasComercio::class);
-    }
-
-    public function comercioMaquina(): HasMany
-    {
-        return $this->hasMany(ComercioMaquina::class);
     }
 
     /**

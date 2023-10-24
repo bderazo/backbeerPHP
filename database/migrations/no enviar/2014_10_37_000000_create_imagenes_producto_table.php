@@ -12,15 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('imagenes_producto', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nombres');
-            $table->string('apellidos');
-            $table->string('correo')->unique();
-            $table->string('password');
-            $table->enum('rol', ['ADMIN', 'SUPERVISOR', 'VENDEDOR']);
-            $table->string('identificacion')->unique()->nullable();
-            $table->string('registrado_por');
+            $table->foreignUuid('producto_id')
+                ->constrained('producto')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+            $table->string('url_imagen');
+            $table->integer('estado');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('imagenes_producto');
     }
 };

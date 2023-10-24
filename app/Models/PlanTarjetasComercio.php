@@ -8,47 +8,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Comercio extends Model
+class PlanTarjetasComercio extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'comercio';
+    protected $table = 'plan_tarjetas_comercio';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'nombre_comercial',
-        'razon_social',
-        'ruc',
-        'direccion',
-        'telefono',
-        'whatsapp',
-        'correo',
-        'logo',
-        'sitio_web',
+        'comercio_id',
         'estado',
-        'tipo_comercio'
+        'detalle',
+        'precio',
+        'tipo_tarjeta',
+        'pago_tarjetas_id'
     ];
-
-
-    public function tipo_comercio(): BelongsTo
+    
+    public function comercio_id(): BelongsTo
     {
-        return $this->belongsTo(TipoComercio::class, 'tipo_comercio');
+        return $this->belongsTo(Comercio::class, 'id');
+
     }
 
-    public function userTarjeta(): HasMany
+    public function pago_tarjetas_id(): BelongsTo
     {
-        return $this->hasMany(UserTarjeta::class);
+        return $this->belongsTo(PagoTarjetas::class, 'id');
+
     }
 
-    public function planTarjetasComercio(): HasMany
+    public function tarjetasComercio(): HasMany
     {
-        return $this->hasMany(PlanTarjetasComercio::class);
+        return $this->hasMany(TarjetasComercio::class);
     }
-
-    public function comercioMaquina(): HasMany
-    {
-        return $this->hasMany(ComercioMaquina::class);
-    }
-
+    
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
