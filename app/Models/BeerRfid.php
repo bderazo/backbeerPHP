@@ -6,37 +6,41 @@ use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Consumo extends Model
+class BeerRfid extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'consumo';
+    protected $table = 'beer_rfid';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'id_pulsera',
-        'total',
-        'precio',
-        'id_maquina',
+        'usuario_id',
+        'cupo_max',
         'estado',
-        'id_venta'
+        'tipo_usuario',
+        'tipo_sensor',
+        'codigo_sensor',
+        'usuario_registra',
     ];
 
-    public function maquina()
+
+    public function usuario_id(): BelongsTo
     {
-        return $this->belongsTo(Maquina::class, 'id_maquina');
+        return $this->belongsTo(Usuario::class, 'id');
     }
 
-    public function pulsera()
+    public function usuario_registra(): BelongsTo
     {
-        return $this->belongsTo(Pulsera::class, 'id_pulsera');
+        return $this->belongsTo(Usuario::class, 'id');
     }
 
-    public function venta()
+    public function venta(): HasMany
     {
-        return $this->belongsTo(Venta::class, 'id_venta');
+        return $this->hasMany(Venta::class);
     }
 
+  
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -56,5 +60,4 @@ class Consumo extends Model
     {
         return [];
     }
-
 }

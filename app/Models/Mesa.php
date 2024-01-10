@@ -7,34 +7,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Consumo extends Model
+class Mesa extends Model
 {
-    use HasFactory,Uuid;
-    protected $table = 'consumo';
+    use HasFactory, Uuid;
+    protected $table = 'mesas';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'id_pulsera',
-        'total',
-        'precio',
-        'id_maquina',
+        'sucursal_id',
+        'num_mesa',
+        'ubicacion_x',
+        'ubicacion_y',
+        'num_personas',
         'estado',
-        'id_venta'
     ];
 
-    public function maquina()
+    public function sucursal_id(): BelongsTo
     {
-        return $this->belongsTo(Maquina::class, 'id_maquina');
-    }
-
-    public function pulsera()
-    {
-        return $this->belongsTo(Pulsera::class, 'id_pulsera');
-    }
-
-    public function venta()
-    {
-        return $this->belongsTo(Venta::class, 'id_venta');
+        return $this->belongsTo(Sucursal::class, 'id');
     }
 
     /**

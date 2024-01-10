@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Comercio extends Model
 {
@@ -32,6 +31,11 @@ class Comercio extends Model
         return $this->hasMany(Maquina::class, 'id_comercio');
     }
 
+
+    public function comercioMaquina(): HasMany
+    {
+        return $this->hasMany(ComercioMaquina::class);
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

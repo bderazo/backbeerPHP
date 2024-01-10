@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Usuario;
-use Carbon\Carbon;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail;
+use App\Mail\ResetPasswordMailP;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -54,52 +55,49 @@ class LoginController extends Controller
         }
     }
 
-    public function solicitarOlvidoClave(Request $request)
+    //onlytap
+    public function sendResetLinkEmail(Request $request)
     {
         try {
-            $input = $request->only('correo');
-            $validator = Validator::make($input, [
-                'correo' => 'required|email|exists:usuarios,correo',
-            ]);
+            $request->validate(['correo' => 'required|email|exists:usuarios,correo']);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'Ha ocurrido un error al validar el Email!',
-                    'data' => $validator->errors()
-                ], 422);
-            } else {
-                $response = Password::sendResetLink($input);
-                switch ($response) {
-                    case Password::RESET_LINK_SENT:
-                        return response()->json([
-                            'status' => 200,
-                            'message' => 'Le enviaremos un enlace a su correo para restablecer la contraseña.',
-                            'data' => $response
-                        ], 200);
-                        break;
-                    case Password::INVALID_USER:
-                        return response()->json([
-                            'status' => 400,
-                            'message' => 'Email invalido.',
-                            'data' => $response
-                        ], 400);
-                        break;
-                    case Password::RESET_THROTTLED:
-                        return response()->json([
-                            'status' => 400,
-                            'message' => 'Ya se realizo un peticion para restablecer clave, espere unos minutos.',
-                            'data' => $response
-                        ], 400);
-                        break;
-                }
-            }
-        } catch (\Throwable $th) {
+            $email = $request->input('correo');
+
+            $token = Str::random(64);
+
+            DB::table('password_resets')->insert([
+                'email' => $email,
+                'token' => $token,
+                'created_at' => now()
+            ]);
+            $passwordResetObject = DB::table('password_resets')
+                ->where('email', $email)
+                ->where('token', $token)
+                ->first();
+
+            // var_dump($passwordResetObject);
+            Mail::to($email)->send(new ResetPasswordMail($passwordResetObject));
+
+            // Mostrar mensaje de éxito
             return response()->json([
-                'status' => $th->getCode(),
-                'message' => 'Ocurrio un error!.',
-                'data' => $th->getMessage()
-            ], 400);
+                'status' => 200,
+                'message' => 'Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico.'
+            ]);
+        } catch (\PDOException $e) {
+            // Verificar si el error es debido a la violación de integridad
+            if ($e->getCode() === '23000') {
+                // Mostrar mensaje de error personalizado
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Ya se ha realizado una petición de cambio de contraseña para este correo electrónico.'
+                ]);
+            }
+
+            // Si el error no es de integridad, puedes manejarlo de otra forma o mostrar un mensaje genérico de error
+            return response()->json([
+                'status' => 500,
+                'message' => 'Ocurrió un error al procesar la solicitud.'
+            ]);
         }
     }
 
@@ -112,41 +110,91 @@ class LoginController extends Controller
             'correo' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ]);
+
         if ($validator->fails()) {
             return response([
                 'status' => 422,
-                'message' => 'Ocurrio un error al validar los datos.',
+                'message' => 'Ocurrió un error al validar los datos.',
                 'data' => $validator->errors()
             ], 422);
-        } else {
-            $response = Password::reset($input, function ($user, $password) {
-                $user->forceFill(['password' => Hash::make($password)])->save();
-                event(new PasswordReset($user));
-            });
-            switch ($response) {
-                case Password::PASSWORD_RESET:
-                    return response()->json([
-                        'status' => 200,
-                        'message' => 'Clave cambiada correctamente..',
-                        'data' => $response
-                    ], 200);
-                    break;
-                case Password::INVALID_USER:
-                    return response()->json([
-                        'status' => 400,
-                        'message' => 'Email invalido.',
-                        'data' => $response
-                    ], 400);
-                    break;
-                case Password::INVALID_TOKEN:
-                    return response()->json([
-                        'status' => 400,
-                        'message' => 'El token es invalido.',
-                        'data' => $response
-                    ], 400);
-                    break;
+        }
 
+        $tokenData = DB::table('password_resets')
+            ->where('email', $input['correo'])
+            ->where('token', $input['token'])
+            ->first();
+
+        if (!$tokenData) {
+            return response([
+                'status' => 422,
+                'message' => 'El token de recuperación de contraseña no es válido.',
+                'data' => []
+            ], 422);
+        }
+
+        // Verificación exitosa del token, proceder a cambiar la contraseña
+        $user = Usuario::where('correo', $input['correo'])->first();
+        $user->password = Hash::make($input['password']);
+        $user->save();
+
+        // Eliminar el registro del token de recuperación de contraseña
+        DB::table('password_resets')
+            ->where('email', $input['correo'])
+            ->delete();
+
+        // Acciones adicionales después de actualizar la contraseña
+        // ...
+
+        return response([
+            'status' => 200,
+            'message' => 'La contraseña se ha cambiado correctamente.',
+            'data' => []
+        ], 200);
+    }
+
+    //proatek
+    public function sendResetEmailLink(Request $request)
+    {
+        try {
+            $request->validate(['correo' => 'required|email|exists:usuarios,correo']);
+
+            $email = $request->input('correo');
+
+            $token = Str::random(64);
+
+            DB::table('password_resets')->insert([
+                'email' => $email,
+                'token' => $token,
+                'created_at' => now()
+            ]);
+            $passwordResetObject = DB::table('password_resets')
+                ->where('email', $email)
+                ->where('token', $token)
+                ->first();
+
+            // var_dump($passwordResetObject);
+            Mail::to($email)->send(new ResetPasswordMailP($passwordResetObject));
+
+            // Mostrar mensaje de éxito
+            return response()->json([
+                'status' => 200,
+                'message' => 'Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico.'
+            ]);
+        } catch (\PDOException $e) {
+            // Verificar si el error es debido a la violación de integridad
+            if ($e->getCode() === '23000') {
+                // Mostrar mensaje de error personalizado
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Ya se ha realizado una petición de cambio de contraseña para este correo electrónico.'
+                ]);
             }
+
+            // Si el error no es de integridad, puedes manejarlo de otra forma o mostrar un mensaje genérico de error
+            return response()->json([
+                'status' => 500,
+                'message' => 'Ocurrió un error al procesar la solicitud.'
+            ]);
         }
     }
 

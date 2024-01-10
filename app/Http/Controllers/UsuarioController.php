@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TipoUsuario;
 use App\Models\Usuario;
+use App\Models\UsuarioComercio;
+use App\Models\UsuarioSucursal;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -55,7 +56,6 @@ class UsuarioController extends Controller
                     'data' => $usuario
                 ], 201);
             }
-
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
@@ -117,28 +117,60 @@ class UsuarioController extends Controller
     public function listarUsuarios(Request $request)
     {
         try {
-            $request->merge([
-                'page' => $request->input('page', 0) + 1
-            ]);
-            $lst_usuarios = Usuario::get();
-            $perPage = 10; // Número de elementos por página
-            $page = request()->get('page', 1); // Número de página actual
-            $offset = ($page - 1) * $perPage; // Cálculo del offset
-
-            $lst_usuarios = collect($lst_usuarios)->forPage($page, $perPage); // Paginación de la colección
-
-            if ($lst_usuarios != null) {
+            $lst_comercios = Usuario::paginate(10);
+            if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Lista de Usuarios.',
-                    'data' => $lst_usuarios
+                    'message' => 'Lista de usuarios. ',
+                    'data' => $lst_comercios
                 ]);
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No hay Usuarios registrados.',
-                    'data' => null
+                    'message' => 'No existen usuarios',
+                    'data' => $lst_comercios
                 ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!. ',
+                'data' => $th->getMessage()
+            ], $th->getCode());
+        }
+    }
+
+    public function asignarUsuarioEntidad(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|exists:usuarios,id',
+                'comercio_id' => 'required|exists:comercio,id',
+                'rol' => 'required',
+                'estado' => 'required',
+                'registrado_por' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $usuario = UsuarioComercio::create([
+                    'usuario_id' => $request->usuario_id,
+                    'comercio_id' => $request->comercio_id,
+                    'rol' => $request->rol,
+                    'estado' => $request->estado,
+                    'registrado_por' => $request->registrado_por,
+                ]);
+                // $input = $request->only('correo');
+                return response()->json([
+                    'status' => 201,
+                    'message' => 'Usuario creado correctamente.',
+                    // 'email' => Password::sendResetLink($input),
+                    'data' => $usuario
+                ], 201);
             }
         } catch (AuthorizationException $th) {
             return response()->json([

@@ -5,37 +5,17 @@ namespace App\Models;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Consumo extends Model
+class TipoProducto extends Model
 {
-    use HasFactory,Uuid;
-    protected $table = 'consumo';
+    use HasFactory, Uuid;
+    protected $table = 'tipo_producto';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'id_pulsera',
-        'total',
-        'precio',
-        'id_maquina',
+        'nombre',
         'estado',
-        'id_venta'
     ];
-
-    public function maquina()
-    {
-        return $this->belongsTo(Maquina::class, 'id_maquina');
-    }
-
-    public function pulsera()
-    {
-        return $this->belongsTo(Pulsera::class, 'id_pulsera');
-    }
-
-    public function venta()
-    {
-        return $this->belongsTo(Venta::class, 'id_venta');
-    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

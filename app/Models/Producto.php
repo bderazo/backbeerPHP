@@ -7,34 +7,38 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Consumo extends Model
+class Producto extends Model
 {
-    use HasFactory,Uuid;
-    protected $table = 'consumo';
+    use HasFactory, Uuid;
+    protected $table = 'producto';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'id_pulsera',
-        'total',
-        'precio',
-        'id_maquina',
+        'comercio_id',
+        'nombre',
+        'descripcion',
+        'tipo_producto_id',
+        'categoria_producto_id',
         'estado',
-        'id_venta'
+        'codigo_barras',
+        'tipo_impuesto',
+        'precio_compra',
+        'registrado_por',
     ];
 
-    public function maquina()
+    public function comercio_id(): BelongsTo
     {
-        return $this->belongsTo(Maquina::class, 'id_maquina');
+        return $this->belongsTo(Comercio::class, 'comercio_id');
     }
 
-    public function pulsera()
+    public function categoria_producto_id(): BelongsTo
     {
-        return $this->belongsTo(Pulsera::class, 'id_pulsera');
+        return $this->belongsTo(CategoriaProducto::class, 'categoria_producto_id');
     }
 
-    public function venta()
+    public function tipo_producto_id(): BelongsTo
     {
-        return $this->belongsTo(Venta::class, 'id_venta');
+        return $this->belongsTo(TipoProducto::class, 'tipo_producto_id');
     }
 
     /**
@@ -56,5 +60,4 @@ class Consumo extends Model
     {
         return [];
     }
-
 }

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CategoriaProductoController;
 use App\Http\Controllers\ConfiguracionesTarjetaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SocialesTarjetaController;
 use App\Http\Controllers\UserTarjetaController;
 use App\Http\Controllers\UsuarioController;

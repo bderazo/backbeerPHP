@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comercio;
+use App\Models\Mesa;
+use App\Models\Sucursal;
 use App\Models\TipoComercio;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ComercioController extends Controller
 {
@@ -50,7 +53,6 @@ class ComercioController extends Controller
                     'data' => $comercio
                 ], 201);
             }
-
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
@@ -89,7 +91,6 @@ class ComercioController extends Controller
                     'data' => 'UUID Formato incorrecto.'
                 ], 422);
             }
-
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
