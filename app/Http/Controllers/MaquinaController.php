@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TipoUsuario;
-use App\Models\Usuario;
+use App\Models\Maquina;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
-class UsuarioController extends Controller
+define('MENSAJE_NO_AUTORIZADO', 'No autorizado!.');
+define('MENSAJE_ERROR2', 'Ocurrio un error!.');
+class MaquinaController extends Controller
 {
     public function __construct()
     {
         // $this->middleware('auth:api');
     }
-    public function crearUsuario(Request $request)
+    public function crearMaquina(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'correo' => 'required|unique:usuarios,correo',
-                'rol' => 'required',
-                'nombres' => 'required',
-                'apellidos' => 'required',
-                'tipo_usuario' => 'required',
-                'registrado_por' => 'required'
+                'tipo_cerveza' => 'required',
+                'ubicacion' => 'required',
+                'precio' => 'required',
+                'cantidad' => 'required',
+                'estado' => 'required',
+                'id_comercio' => 'required'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -35,72 +35,66 @@ class UsuarioController extends Controller
                     'data' => $validator->errors()
                 ], 422);
             } else {
-                $usuario = Usuario::create([
-                    'correo' => $request->correo,
-                    'password' => Hash::make($request->password ?? 'beer2024'),
-                    'identificacion' => $request->identificacion,
-                    'rol' => $request->rol,
-                    'nombres' => $request->nombres,
-                    'apellidos' => $request->apellidos,
-                    'telefono' => $request->telefono,
-                    'tipo_usuario' => $request->tipo_usuario,
-                    'puntos' => $request->puntos,
-                    'registrado_por' => $request->registrado_por,
+                $maquina = Maquina::create([
+                    'tipo_cerveza' => $request->tipo_cerveza,
+                    'ubicacion' => $request->ubicacion,
+                    'precio' => $request->precio,
+                    'cantidad' => $request->cantidad,
+                    'estado' => 0,
+                    'id_comercio' => $request->id_comercio,
                 ]);
-                // $input = $request->only('correo');
                 return response()->json([
                     'status' => 201,
-                    'message' => 'Usuario creado correctamente.',
-                    // 'email' => Password::sendResetLink($input),
-                    'data' => $usuario
+                    'message' => 'Maquina creado correctamente.',
+                    'data' => $maquina
                 ], 201);
             }
 
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => MENSAJE_NO_AUTORIZADO,
                 'data' => $th->getMessage()
             ], 401);
         } catch (Exception $e) {
             return response()->json([
                 'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
+                'message' => MENSAJE_ERROR2,
                 'data' => $e->getMessage()
             ], 400);
         }
     }
 
-    public function verUsuario($id)
+    public function verMaquina($id)
     {
         try {
             if (Str::isUuid($id)) {
-                $usuario = Usuario::get()->where('id', $id)->first();
-                if ($usuario != null) {
+                $maquina = Maquina::get()->where('id', $id)->first();
+                if ($maquina != null) {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Datos de Usuario.',
-                        'data' => $usuario
+                        'message' => 'Datos de Maquina.',
+                        'data' => $maquina
                     ]);
                 } else {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'No se encontro datos del Usuario indicado.',
+                        'message' => 'No se encontro datos del Maquina indicado.',
                         'data' => null
                     ]);
                 }
             } else {
-                $usuario = Usuario::get()->where('id', $id)->first();
-                if ($usuario != null) {
+                $maquina = Maquina::get()->where('id', $id)->first();
+                if ($maquina != null) {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Datos de Usuario.',
-                        'data' => $usuario
+                        'message' => 'Datos de Maquina.',
+                        'data' => $maquina
                     ]);
                 } else {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'No se encontro datos del Usuario indicado.',
+                        'message' => 'No se encontro datos del Maquina indicado.',
                         'data' => null
                     ]);
                 }
@@ -108,19 +102,19 @@ class UsuarioController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'Ocurrio un error!.',
+                'message' => MENSAJE_ERROR2,
                 'data' => $th->getMessage()
             ], 400);
         }
     }
 
-    public function listarUsuarios(Request $request)
+    public function listarMaquina(Request $request)
     {
         try {
             $request->merge([
                 'page' => $request->input('page', 0) + 1
             ]);
-            $lst_usuarios = Usuario::get();
+            $lst_usuarios = Maquina::get();
             $perPage = 10; // Número de elementos por página
             $page = request()->get('page', 1); // Número de página actual
             $offset = ($page - 1) * $perPage; // Cálculo del offset
@@ -143,99 +137,99 @@ class UsuarioController extends Controller
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => MENSAJE_NO_AUTORIZADO,
                 'data' => $th->getMessage()
             ], 401);
         } catch (Exception $e) {
             return response()->json([
                 'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
+                'message' => MENSAJE_ERROR2,
                 'data' => $e->getMessage()
             ], 400);
         }
     }
 
-    public function actualizarUsuario(Request $request, $id)
+
+    public function actualizarMaquina(Request $request, $id)
     {
         try {
             if ($id) {
-                $usuario = Usuario::get()->where('id', $id)->first();
-                if ($usuario != null) {
-                    $usuario->fill($request->all());
-                    $usuario->save();
+                $maquina = Maquina::get()->where('id', $id)->first();
+                if ($maquina != null) {
+                    $maquina->fill($request->all());
+                    $maquina->save();
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Usuario actualizado correctamente.',
-                        'data' => $usuario
+                        'message' => 'Maquina actualizado correctamente.',
+                        'data' => $maquina
                     ]);
                 } else {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'No se encontro datos del Usuario indicado.',
+                        'message' => 'No se encontro datos del Maquina indicado.',
                         'data' => null
                     ]);
                 }
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No se encontro el Usuario indicado.',
+                    'message' => 'No se encontro el Maquina indicado.',
                     'data' => null
                 ]);
             }
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => MENSAJE_NO_AUTORIZADO,
                 'data' => $th->getMessage()
             ], 401);
         } catch (Exception $e) {
             return response()->json([
                 'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
+                'message' => MENSAJE_ERROR2,
                 'data' => $e->getMessage()
             ], 400);
         }
     }
 
-    public function eliminarUsuario($id)
+    public function eliminarMaquina($id)
     {
         try {
             if ($id) {
-                $usuario = Usuario::get()->where('id', $id)->first();
-                if ($usuario != null) {
-                    $usuario->delete();
+                $maquina = Maquina::get()->where('id', $id)->first();
+                if ($maquina != null) {
+                    $maquina->delete();
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Usuario eliminado correctamente.',
+                        'message' => 'Maquina eliminado correctamente.',
                         'data' => null
                     ]);
                 } else {
                     return response()->json([
                         'status' => 200,
-                        'message' => 'No se encontro datos del Usuario indicado.',
+                        'message' => 'No se encontro datos del Maquina indicado.',
                         'data' => null
                     ]);
                 }
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No se encontro el Usuario indicado.',
+                    'message' => 'No se encontro el Maquina indicado.',
                     'data' => null
                 ]);
             }
         } catch (AuthorizationException $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'No autorizado!.',
+                'message' => MENSAJE_NO_AUTORIZADO,
                 'data' => $th->getMessage()
             ], 401);
         } catch (Exception $e) {
             return response()->json([
                 'status' => $e->getCode(),
-                'message' => 'Ocurrio un error!.',
+                'message' => MENSAJE_ERROR2,
                 'data' => $e->getMessage()
             ], 400);
         }
     }
-
 }

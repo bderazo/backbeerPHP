@@ -12,21 +12,24 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('producto_sucursal', function (Blueprint $table) {
+        Schema::create('consumo', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('producto_id')
-                ->constrained('producto')
+            $table->foreignUuid('id_pulsera')
+                ->constrained('pulsera')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->foreignUuid('sucursal_id')
-                ->constrained('sucursal')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-            $table->integer('stock');
-            $table->integer('estado');
-            $table->string('registrado_por');
+            $table->double('total');
             $table->double('precio');
-            $table->double('alerta_min_stock');
+            $table->foreignUuid('id_maquina')
+                ->constrained('maquina')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+            $table->integer('estado');
+            $table->foreignUuid('id_venta')
+                ->nullable()
+                ->constrained('venta')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
             $table->timestamps();
         });
     }
@@ -38,6 +41,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('producto_sucursal');
+        Schema::dropIfExists('consumo');
     }
 };

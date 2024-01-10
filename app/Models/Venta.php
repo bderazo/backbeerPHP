@@ -9,24 +9,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class ConfiguracionesTarjeta extends Model
+class Venta extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'configuraciones_tarjeta';
+    protected $table = 'venta';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'user_tarjeta_id',
-        'estado',
-        'text_label',
-        'flag_value',
+        'id_cliente',
+        'total',
+        'precio',
+        'tipo_pago',
+        'estado'
     ];
 
-
-    public function user_tarjeta_id(): BelongsTo
+    public function usuario()
     {
-        return $this->belongsTo(UserTarjeta::class, 'id');
+        return $this->belongsTo(Usuario::class);
+    }
 
+    public function consumos()
+    {
+        return $this->hasMany(Consumo::class, 'id_venta');
     }
 
     /**

@@ -12,21 +12,16 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('recibo', function (Blueprint $table) {
+        Schema::create('venta', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('cliente_id')
-                ->constrained('cliente')
+            $table->foreignUuid('id_cliente')
+                ->constrained('usuarios')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->foreignUuid('venta_id')
-                ->constrained('venta')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-            $table->double('valor_total');
-            $table->double('impuestos_total');
-            $table->integer('items_vendidos');
+            $table->double('total');
+            $table->double('precio');
+            $table->string('tipo_pago');
             $table->integer('estado');
-            $table->double('descuento_total');
             $table->timestamps();
         });
     }
@@ -38,6 +33,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('recibo');
+        Schema::dropIfExists('venta');
     }
 };

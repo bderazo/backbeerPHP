@@ -22,16 +22,10 @@ class ComercioController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nombre_comercial' => 'required',
-                'razon_social' => 'required',
                 'ruc' => 'required|unique:comercio,ruc',
                 'direccion' => 'required',
-                'telefono' => 'required',
-                'whatsapp' => 'required',
-                'correo' => 'required|unique:comercio,correo',
-                'logo' => 'required',
-                'sitio_web' => 'required',
-                'estado' => 'nullable',
-                'tipo_comercio' => 'required|exists:tipo_comercio,id'
+                'correo' => 'unique:comercio,correo',
+                'estado' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -42,15 +36,12 @@ class ComercioController extends Controller
             } else {
                 $comercio = Comercio::create([
                     'nombre_comercial' => $request->nombre_comercial,
-                    'razon_social' => $request->razon_social,
                     'ruc' => $request->ruc,
                     'direccion' => $request->direccion,
                     'telefono' => $request->telefono,
-                    'whatsapp' => $request->whatsapp,
                     'correo' => $request->correo,
                     'logo' => $request->logo,
                     'sitio_web' => $request->sitio_web,
-                    'tipo_comercio' => $request->tipo_comercio,
                     'estado' => true
                 ]);
                 return response()->json([
@@ -83,12 +74,12 @@ class ComercioController extends Controller
                 return ($comercio != null) ?
                     response()->json([
                         'status' => 200,
-                        'message' => 'Solicitud de Firma previa indicado.',
+                        'message' => 'Comercio indicado.',
                         'data' => $comercio
                     ], 200) :
                     response()->json([
                         'status' => 200,
-                        'message' => 'No se encontro la Solicitud de Firma previa.',
+                        'message' => 'No se encontro el comercio.',
                         'data' => null
                     ], 200);
             } else {
@@ -150,22 +141,28 @@ class ComercioController extends Controller
     public function eliminarComercio($id)
     {
         try {
-            $comercio = Comercio::find($id);
-            if ($comercio != null) {
-                $comercio->update([
-                    'estado' => false
-                ]);
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Entidad Comercial eliminada correctamente.',
-                    'data' => null
-                ], 200);
+            if ($id) {
+                $comercio = Comercio::get()->where('id', $id)->first();
+                if ($comercio != null) {
+                    $comercio->delete();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'Comercio eliminado correctamente.',
+                        'data' => null
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'No se encontro datos del Comercio indicado.',
+                        'data' => null
+                    ]);
+                }
             } else {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'No se encontro la Entidad Comercial indicada.',
+                    'message' => 'No se encontro el Comercio indicado.',
                     'data' => null
-                ], 200);
+                ]);
             }
         } catch (AuthorizationException $th) {
             return response()->json([
@@ -197,32 +194,6 @@ class ComercioController extends Controller
                     'status' => 200,
                     'message' => 'No existen entidades comerciales',
                     'data' => $lst_comercios
-                ]);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => $th->getCode(),
-                'message' => 'Ocurrio un error!. ',
-                'data' => $th->getMessage()
-            ], $th->getCode());
-        }
-    }
-
-    public function listarTipoComercios()
-    {
-        try {
-            $tipo_comercios = TipoComercio::all();
-            if ($tipo_comercios != null) {
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Lista de tipo de comercios. ',
-                    'data' => $tipo_comercios
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'No existen tipo de comercios',
-                    'data' => $tipo_comercios
                 ]);
             }
         } catch (\Throwable $th) {

@@ -9,25 +9,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class SocialesTarjeta extends Model
+class Maquina extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'sociales_tarjeta';
+    protected $table = 'maquina';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'user_tarjeta_id',
+        'tipo_cerveza',
+        'ubicacion',
+        'precio',
+        'cantidad',
         'estado',
-        'text_label',
-        'url_label',
-        'tipo_social',
-        'icon_social',
+        'id_comercio',
     ];
 
-    public function user_tarjeta_id(): BelongsTo
+    public function comercio()
     {
-        return $this->belongsTo(UserTarjeta::class, 'id');
+        return $this->belongsTo(Comercio::class);
+    }
 
+    public function consumos()
+    {
+        return $this->hasMany(Consumo::class, 'id_maquina');
     }
 
     /**

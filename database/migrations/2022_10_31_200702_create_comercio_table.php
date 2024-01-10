@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,13 +13,15 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('imagenes_producto', function (Blueprint $table) {
+        Schema::create('comercio', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('producto_id')
-                ->constrained('producto')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-            $table->string('url_imagen');
+            $table->string('nombre_comercial');
+            $table->string('ruc')->unique();
+            $table->string('direccion');
+            $table->string('telefono')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('logo')->nullable();
+            $table->string('sitio_web')->nullable();
             $table->integer('estado');
             $table->timestamps();
         });
@@ -31,6 +34,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('imagenes_producto');
+        Schema::dropIfExists('comercio');
     }
 };

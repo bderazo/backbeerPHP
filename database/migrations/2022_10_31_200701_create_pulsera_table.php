@@ -12,23 +12,23 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('producto', function (Blueprint $table) {
+        Schema::create('pulsera', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('comercio_id')
-                ->constrained('comercio')
+            $table->foreignUuid('id_cliente')
+                ->unique()
+                ->nullable()
+                ->constrained('usuarios')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->string('nombre');
-            $table->string('descripcion');
-            $table->string('tipo_producto');
-            $table->foreignUuid('categoria_producto_id')
-                ->constrained('categoria_producto')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
+            $table->double('cupo_maximo')->nullable();
             $table->integer('estado');
-            $table->string('codigo_barras');
-            $table->integer('tipo_impuesto');
-            $table->string('registrado_por');
+            $table->string('tipo_sensor');
+            $table->string('codigo_sensor')->unique();
+            $table->foreignUuid('usuario_registra')
+                ->nullable()
+                ->constrained('usuarios')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
             $table->timestamps();
         });
     }
@@ -40,6 +40,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('producto');
+        Schema::dropIfExists('pulsera');
     }
 };

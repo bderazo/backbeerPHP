@@ -22,37 +22,33 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
     protected $fillable = [
         'nombres',
         'apellidos',
+        'telefono',
         'correo',
         'password',
         'rol',
+        'tipo_usuario',
         'identificacion',
-        'registrado_por',
+        'puntos',
+        'registrado_por'
     ];
 
     protected $hidden = [
         'password',
-
-
     ];
 
-    public function userTarjeta(): HasMany
+    public function pulsera()
     {
-        return $this->hasMany(UserTarjeta::class);
+        return $this->hasOne(Pulsera::class, 'id_cliente');
     }
 
-    public function pagoTarjetas(): HasMany
+    public function pulserasRegistradas()
     {
-        return $this->hasMany(PagoTarjetas::class);
+        return $this->hasMany(Pulsera::class, 'usuario_registra');
     }
 
-    public function usuarioPermiso(): HasMany
+    public function ventas()
     {
-        return $this->hasMany(UsuarioPermiso::class);
-    }
-
-    public function planTarjetas(): HasMany
-    {
-        return $this->hasMany(PlanTarjetas::class);
+        return $this->hasMany(Venta::class, 'id_cliente');
     }
 
     /**
@@ -74,5 +70,4 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
     {
         return [];
     }
-
 }

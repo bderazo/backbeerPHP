@@ -6,6 +6,8 @@ use App\Http\Controllers\SocialesTarjetaController;
 use App\Http\Controllers\UserTarjetaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComercioController;
+use App\Http\Controllers\MaquinaController;
+use App\Http\Controllers\BeerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,56 +23,52 @@ use Illuminate\Support\Facades\Route;
 
 // //LOGIN
 Route::controller(LoginController::class)->group(function () {
-    Route::post('auth/login', 'login');
-    // Route::post('auth/password/recuperar-password', 'solicitarOlvidoClave');
-    // Route::post('auth/password/cambiar-password', 'cambiarClave')->name('password.reset');
+    Route::get('auth/login', 'login');
+    Route::post('auth/password/recuperar-password', 'solicitarOlvidoClave');
+    Route::post('auth/password/cambiar-password', 'cambiarClave')->name('password.reset');
 
 });
 
 //USUARIO
 Route::controller(UsuarioController::class)->group(function () {
     Route::post('usuario/crear', 'crearUsuario');
-    Route::post('usuario/ver/{usuario}', 'verUsuario');
-    Route::post('usuario/listar', 'listarUsuarios');
-    // Route::put('usuario/actualizar/{id}', 'actualizarUsuario');
-    // Route::delete('usuario/eliminar/{id}', 'eliminarUsuario');
-    // Route::put('usuario/password/cambiar', 'cambiarPassword');
-    // Route::post('usuario/entidad/crear', 'crearUsuarioEntidad');
-    // Route::put('usuario/entidad/actualizar/{id}', 'actualizarUsuarioEntidad');
-    // Route::put('usuario/perfil/actualizar', 'actualizarPerfil');
-    // Route::get('usuario/buscar', 'buscarUsuarioCedula');
-    // Route::get('usuario/entidad/buscar', 'buscarUsuarioCedulaEntidad');
+    Route::get('usuario/ver/{usuario}', 'verUsuario');
+    Route::get('usuario/listar', 'listarUsuarios');
+    Route::put('usuario/actualizar/{id}', 'actualizarUsuario');
+    Route::delete('usuario/eliminar/{id}', 'eliminarUsuario');
 });
 
 //COMERCIO
 Route::controller(ComercioController::class)->group(function () {
     Route::post('comercio/crear', 'crearComercio');
-    Route::post('comercio/ver/{id}', 'verComercio');
-    Route::post('comercio/actualizar/{id}', 'actualizarComercio');
+    Route::get('comercio/ver/{id}', 'verComercio');
+    Route::get('comercio/listar', 'listarAllComercios');
+    Route::put('comercio/actualizar/{id}', 'actualizarComercio');
     Route::delete('comercio/eliminar/{id}', 'eliminarComercio');
-    Route::post('comercio/listar', 'listarAllComercios');
-    Route::post('tipo/comercio/listar', 'listarTipoComercios');
 });
 
-
-//TARJETA DE USUARIO
-Route::controller(UserTarjetaController::class)->group(function () {
-    Route::post('usuario/tarjeta/crear', 'crearUserTarjeta');
-    Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
-    Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
+//MAQUINA
+Route::controller(MaquinaController::class)->group(function () {
+    Route::post('maquina/crear', 'crearMaquina');
+    Route::get('maquina/ver/{id}', 'verMaquina');
+    Route::get('maquina/listar', 'listarMaquina');
+    Route::put('maquina/actualizar/{id}', 'actualizarMaquina');
+    Route::delete('maquina/eliminar/{id}', 'eliminarMaquina');
 });
 
-//SOCIALES DE TARJETA DE USUARIO
-Route::controller(SocialesTarjetaController::class)->group(function () {
-    Route::post('tarjeta/sociales/crear', 'crearSocialesTarjeta');
-    Route::post('tarjeta/sociales/actualizar/{id}', 'actualizarSocialesTarjeta');
+//Maquina cerveza
+Route::controller(BeerController::class)->group(function () {
+    Route::post('sensor/beer/crear', 'crearBeerCode');
+    Route::get('sensor/beer/escanear', 'escanearSensor');
+    Route::put('usuario/beer/asignar', 'asignarTarjeta');
+    Route::put('sensor/beer/vaciar', 'limpiarTarjeta');
+    Route::get('maquinas/beer/listar', 'listadoMaquinas');
+    Route::put('maquinas/beer/activar', 'activarMaquina');
+    Route::get('maquina/beer/ver', 'verMaquina');
+    Route::put('sensor/maquina/borrar', 'borrarSensorMaquina');
+    Route::get('sensor/beer/listar', 'listadoTarjetas');
+    Route::post('sensor/maquina/venta', 'crearConsumo');
+    Route::get('sensor/consumos/listar', 'listarConsumos');
+
+    Route::post('sensor/ventas/pagar', 'pagarVentas');
 });
-
-//CONFIGURACIONES DE TARJETA DE USUARIO
-Route::controller(ConfiguracionesTarjetaController::class)->group(function () {
-    Route::post('tarjeta/configuraciones/crear', 'crearConfiguracionesTarjeta');
-    Route::post('tarjeta/configuraciones/actualizar/{id}', 'actualizarConfiguracionesTarjeta');
-});
-
-
-

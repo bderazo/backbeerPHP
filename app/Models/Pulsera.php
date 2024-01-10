@@ -9,33 +9,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Sucursal extends Model
+class Pulsera extends Model
 {
     use HasFactory,Uuid;
-    protected $table = 'sucursal';
+    protected $table = 'pulsera';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'comercio_id',
-        'nombre',
-        'ruc',
-        'direccion',
-        'telefono',
-        'whatsapp',
-        'correo',
-        'secuencial_facturas',
-        'siguiente_factura',
-        'reponsable',
+        'id_cliente',
+        'cupo_maximo',
         'estado',
-        'pax_capacidad',
-        'es_matriz',
-        'registrado_por'
+        'tipo_sensor',
+        'codigo_sensor',
+        'usuario_registra',
     ];
 
-
-    public function comercio_id(): BelongsTo
+    public function usuario()
     {
-        return $this->belongsTo(Comercio::class, 'id');
+        return $this->belongsTo(Usuario::class, 'id_cliente');
+    }
+
+    public function usuario_registra()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_registra');
+    }
+    public function consumos()
+    {
+        return $this->hasMany(Consumo::class, 'id_pulsera');
     }
 
     /**

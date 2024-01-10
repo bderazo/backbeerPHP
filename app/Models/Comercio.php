@@ -21,29 +21,17 @@ class Comercio extends Model
         'ruc',
         'direccion',
         'telefono',
-        'whatsapp',
         'correo',
         'logo',
         'sitio_web',
         'estado',
-        'tipo_comercio'
     ];
 
-
-    public function tipo_comercio(): BelongsTo
+    public function maquinas()
     {
-        return $this->belongsTo(TipoComercio::class, 'tipo_comercio');
+        return $this->hasMany(Maquina::class, 'id_comercio');
     }
 
-    public function userTarjeta(): HasMany
-    {
-        return $this->hasMany(UserTarjeta::class);
-    }
-
-    public function planTarjetasComercio(): HasMany
-    {
-        return $this->hasMany(PlanTarjetasComercio::class);
-    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

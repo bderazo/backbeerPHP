@@ -16,10 +16,13 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('nombres');
             $table->string('apellidos');
+            $table->string('telefono')->nullable();
             $table->string('correo')->unique();
             $table->string('password');
-            $table->enum('rol', ['ADMIN','DUEÑO', 'SUPERVISOR', 'VENDEDOR']);
+            $table->enum('rol', ['ADMIN','DUEÑO', 'SUPERVISOR', 'VENDEDOR', 'CLIENTE']);
+            $table->enum('tipo_usuario', ['GOLD', 'SILVER', 'BRONZE', 'FREE']);
             $table->string('identificacion')->unique()->nullable();
+            $table->double('puntos')->nullable();
             $table->string('registrado_por');
             $table->timestamps();
         });
