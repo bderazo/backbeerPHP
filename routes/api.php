@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 // //LOGIN
 Route::controller(LoginController::class)->group(function () {
-    Route::get('auth/login', 'login');
+    Route::post('auth/login', 'login');
     Route::post('auth/password/recuperar-password', 'solicitarOlvidoClave');
     Route::post('auth/password/cambiar-password', 'cambiarClave')->name('password.reset');
 
@@ -65,12 +65,12 @@ Route::controller(BeerController::class)->group(function () {
     Route::put('usuario/beer/asignar', 'asignarTarjeta');
     Route::put('sensor/beer/vaciar', 'limpiarTarjeta');
     Route::get('maquinas/beer/listar', 'listadoMaquinas');
-    Route::put('maquinas/beer/activar', 'activarMaquina');
+    Route::get('maquinas/beer/activar', 'activarMaquina');
     Route::get('maquina/beer/ver', 'verMaquina');
     Route::put('sensor/maquina/borrar', 'borrarSensorMaquina');
     Route::get('sensor/beer/listar', 'listadoTarjetas');
     Route::post('sensor/maquina/venta', 'crearConsumo');
-    Route::get('sensor/consumos/listar', 'listarConsumos');
+    Route::post('sensor/consumos/listar', 'listarConsumos');
 
     Route::post('sensor/ventas/pagar', 'pagarVentas');
 });

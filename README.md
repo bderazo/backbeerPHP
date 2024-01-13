@@ -6,10 +6,16 @@
 
 ## Version de PostgresSQL 14.5
 
-## post clone
+# POST CLONE
 
 ## composer install
 
 ## crear .env
 
 ## php artisan key:generate
+
+## php artisan migrate
+
+## php artisan db:seed --class=InitSeeder
+
+

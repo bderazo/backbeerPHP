@@ -374,7 +374,7 @@ class BeerController extends Controller
                         return response()->json([
                             'status' => 201,
                             'message' => 'Maquina encendida.',
-                            'data' => $maquina,
+                            'data' => true
                         ], 201);
 
                 } else {
