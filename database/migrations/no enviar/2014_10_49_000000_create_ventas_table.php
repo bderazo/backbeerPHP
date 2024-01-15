@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('ventas', function (Blueprint $table) {
-            $table->uuid('id')->primary();         
+            $table->uuid('id')->primary();
             $table->foreignUuid('id_beer')->nullable()
                 ->constrained('beer_rfid')
                 ->cascadeOnUpdate()
