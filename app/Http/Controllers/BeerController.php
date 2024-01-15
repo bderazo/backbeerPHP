@@ -624,8 +624,8 @@ class BeerController extends Controller
                 $venta->id_cliente = $pulsera->id_cliente;
                 $venta->total = $total;
                 $venta->precio = $precio;
-                $venta->tipo_pago = 1;
-                $venta->estado = 'efectivo';
+                $venta->tipo_pago = 'efectivo';
+                $venta->estado = 1;
                 $venta->save();
 
                 // Actualizar el campo id_venta de los consumos
