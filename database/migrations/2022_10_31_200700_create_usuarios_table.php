@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->string('password');
             $table->enum('rol', ['ADMIN','DUEÑO', 'SUPERVISOR', 'VENDEDOR', 'CLIENTE']);
             $table->enum('tipo_usuario', ['GOLD', 'SILVER', 'BRONZE', 'FREE']);
-            $table->enum('rol', ['ADMIN','PROPIETARIO','GERENTE','CAJERO','MESERO','COCINERO','USER', 'PROPIETARIO-ONLY']);
             $table->string('identificacion')->unique()->nullable();
             $table->double('puntos')->nullable();
             $table->string('registrado_por');
