@@ -18,4 +18,10 @@
 
 ## php artisan db:seed --class=InitSeeder
 
+# Realizar peticiones en la red local
+
+## php artisan config:clear 
+
+## php artisan serve --host=0.0.0.0 --port=8000
+
 
