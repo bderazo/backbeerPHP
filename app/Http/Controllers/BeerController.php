@@ -118,6 +118,16 @@ class BeerController extends Controller
                                         'data' => 'Alerta: Sensor enviado.'
                                     ], 200)->content();
                                 }
+                            }elseif(intval($maquina->estado) === 3){
+                                if(intval($sensor->estado) === 0){
+                                    $maquina->codigo_sensor = $sensor->codigo_sensor;
+                                    $maquina->save();
+                                    return response()->json([
+                                        'status' => 200,
+                                        // 'message' => 'Alerta: Sensor enviada.',
+                                        'data' => 'Alerta: Sensor enviado.'
+                                    ], 200)->content();
+                                }
                             }else{
                                 return response()->json([
                                     'status' => 201,
@@ -173,10 +183,12 @@ class BeerController extends Controller
                         // Guarda la tarjeta en la base de datos con el usuario vinculado
                         $registro->save();
 
+                        $tarjeta = Pulsera::where('id', $registro->id)->with(['usuario'])->first();
+
                         return response()->json([
                             'status' => 201,
                             'message' => 'Usuario vinculado a la tarjeta exitosamente.',
-                            'data' => $registro,
+                            'data' => $tarjeta,
                         ], 201);
                     } else {
                         return response()->json([
@@ -561,6 +573,7 @@ class BeerController extends Controller
                 }
                 $consumos = Consumo::where('id_pulsera', $idPulsera)
                                     ->where('estado', 0)
+                                    ->with(['maquina'])
                                     ->get();
 
                 return response()->json([
@@ -642,7 +655,8 @@ class BeerController extends Controller
 
                 // Devolver los resultados
                 return response()->json([
-                    'data' => $venta
+                    'status' => 200,
+                    'data' => $response
                 ]);
 
             } catch (\Exception $e) {

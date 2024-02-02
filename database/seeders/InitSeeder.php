@@ -65,7 +65,7 @@ class InitSeeder extends Seeder
             'tipo_cerveza' => 'Roja',
             'ubicacion' => '1',
             'precio' => '4.99',
-            'cantidad' => '100',
+            'cantidad' => '18',
             'estado' => '0',
         ]);
         //Añade una maquina
@@ -73,7 +73,7 @@ class InitSeeder extends Seeder
             'tipo_cerveza' => 'Negra',
             'ubicacion' => '2',
             'precio' => '5.99',
-            'cantidad' => '100',
+            'cantidad' => '18',
             'estado' => '0',
         ]);
         //Añade una maquina
@@ -81,8 +81,16 @@ class InitSeeder extends Seeder
             'tipo_cerveza' => 'Rubia',
             'ubicacion' => '3',
             'precio' => '6.99',
-            'cantidad' => '100',
+            'cantidad' => '18',
             'estado' => '0',
+        ]);
+        //Añade una maquina
+        Maquina::create([
+            'tipo_cerveza' => 'Caja',
+            'ubicacion' => '0',
+            'precio' => '0',
+            'cantidad' => '0',
+            'estado' => '3',
         ]);
         //Añade una pulsera
         Pulsera::create([
@@ -90,6 +98,13 @@ class InitSeeder extends Seeder
             'estado' => '0',
             'tipo_sensor' => 'RFID',
             'codigo_sensor' => '123456789',
+        ]);
+        //Añade una pulsera
+        Pulsera::create([
+            'cupo_maximo' => '0',
+            'estado' => '0',
+            'tipo_sensor' => 'RFID',
+            'codigo_sensor' => '123456780',
         ]);
     }
 }

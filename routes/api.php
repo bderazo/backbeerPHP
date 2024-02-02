@@ -66,10 +66,10 @@ Route::controller(BeerController::class)->group(function () {
     Route::put('sensor/beer/vaciar', 'limpiarTarjeta');
     Route::get('maquinas/beer/listar', 'listadoMaquinas');
     Route::get('maquinas/beer/activar', 'activarMaquina');
-    Route::get('maquina/beer/ver', 'verMaquina');
+    Route::post('maquina/beer/ver', 'verMaquina');
     Route::put('sensor/maquina/borrar', 'borrarSensorMaquina');
     Route::get('sensor/beer/listar', 'listadoTarjetas');
-    Route::post('sensor/maquina/venta', 'crearConsumo');
+    Route::get('sensor/maquina/venta', 'crearConsumo');
     Route::post('sensor/consumos/listar', 'listarConsumos');
 
     Route::post('sensor/ventas/pagar', 'pagarVentas');
