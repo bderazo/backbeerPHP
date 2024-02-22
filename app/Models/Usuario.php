@@ -43,10 +43,16 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(Pulsera::class, 'usuario_registra');
     }
 
+    public function consumos()
+    {
+        return $this->hasMany(Consumo::class, 'id_cliente');
+    }
+
     public function ventas()
     {
         return $this->hasMany(Venta::class, 'id_cliente');
     }
+
     public function beerRfid(): HasMany
     {
         return $this->hasMany(BeerRfid::class);

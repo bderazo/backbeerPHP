@@ -80,7 +80,8 @@ class BeerController extends Controller
         try {
                 $validator = Validator::make($request->query(), [
                     'id_maquina' => 'required|exists:maquina,id',
-                    'codigo_sensor' => 'required|exists:pulsera,codigo_sensor',
+                    // 'codigo_sensor' => 'required|exists:pulsera,codigo_sensor',
+                    'codigo_sensor' => 'required',
                 ]);
 
                 if ($validator->fails()) {
@@ -92,10 +93,15 @@ class BeerController extends Controller
                 }else{
                     $maquina = Maquina::where('id', $request->id_maquina)->first();
                     $sensor = Pulsera::where('codigo_sensor', $request->codigo_sensor)->first();
+                    // Existe la maquina en BBDD
                     if($maquina){
+                        // Existe el sensor en BBDD
                         if($sensor){
+                            // Si la maquina esta habilitada
                             if(intval($maquina->estado) === 1){
+                                // Si el sensor esta habilitado
                                 if(intval($sensor->estado) === 1){
+                                    // Validar la cantidad maxima que puede obtener el usuario
                                     if($sensor->cupo_maximo < $maquina->cantidad){
                                         return response()->json([
                                             'status' => 202,
@@ -104,11 +110,12 @@ class BeerController extends Controller
                                         ], 202)->content();
                                     }else{
                                         return response()->json([
-                                            'status' => 203,
+                                            'status' => 202,
                                             // 'message' => 'Maquina habilitada.',
                                             'data' => $maquina->cantidad
-                                        ], 203)->content();
+                                        ], 202)->content();
                                     }
+                                // Si el sensor esta deshabilitado
                                 }elseif(intval($sensor->estado) === 0){
                                     $maquina->codigo_sensor = $sensor->codigo_sensor;
                                     $maquina->save();
@@ -117,29 +124,51 @@ class BeerController extends Controller
                                         // 'message' => 'Alerta: Sensor enviada.',
                                         'data' => 'Alerta: Sensor enviado.'
                                     ], 200)->content();
-                                }
-                            }elseif(intval($maquina->estado) === 3){
-                                if(intval($sensor->estado) === 0){
-                                    $maquina->codigo_sensor = $sensor->codigo_sensor;
-                                    $maquina->save();
+                                }elseif(intval($sensor->estado) === 2 || intval($sensor->estado) === 3){
+                                    $litros = $sensor->cupo_maximo/$maquina->precio;
                                     return response()->json([
-                                        'status' => 200,
-                                        // 'message' => 'Alerta: Sensor enviada.',
-                                        'data' => 'Alerta: Sensor enviado.'
-                                    ], 200)->content();
+                                        'status' => 202,
+                                        // 'message' => 'Maquina habilitada.',
+                                        'data' => $litros
+                                    ], 202)->content();
                                 }
+                            // Si la maquina es caja
+                            }elseif(intval($maquina->estado) === 3){
+                                $maquina->codigo_sensor = $sensor->codigo_sensor;
+                                $maquina->save();
+                                return response()->json([
+                                    'status' => 200,
+                                    // 'message' => 'Alerta: Sensor enviada.',
+                                    'data' => 'Alerta: Sensor enviado.'
+                                ], 200)->content();
+                            // Si la maquina esta deshabilitada o ne mantenimiento
                             }else{
                                 return response()->json([
                                     'status' => 201,
                                     'message' => 'Maquina deshabilitada.',
                                 ], 201)->content();
                             }
+                        // Si el sensor no existe
                         }else{
-                            return response()->json([
-                                'status' => 404,
-                                'message' => 'Sensor no encontrado.',
-                            ], 404)->content();
+                            // Si la maquina es caja
+                            if(intval($maquina->estado) === 3){
+                                //  crear registro de sensor
+                                $newRequest = new Request(['codigo_sensor' => $request->codigo_sensor, 'tipo_sensor' => 'RFID']);
+                                $response = $this->crearBeerCode($newRequest);
+                                // Devolver los resultados
+                                return response()->json([
+                                    'status' => 200,
+                                    'data' => $response
+                                ]);
+                            // Si el sensor no existe
+                            }else{
+                                return response()->json([
+                                    'status' => 404,
+                                    'message' => 'Sensor no encontrado.',
+                                ], 404)->content();
+                            }
                         }
+                    // Si la maquina no existe
                     }else{
                         return response()->json([
                             'status' => 404,
@@ -177,11 +206,21 @@ class BeerController extends Controller
                     if ($usuario) {
                         // Asigna el ID del usuario a la tarjeta
                         $registro->id_cliente = $usuario->id;
-                        $registro->cupo_maximo = 4;
-                        $registro->estado = 1;
+                        $registro->cupo_maximo = $request->cupo_maximo;
+                        $registro->estado = $request->estado;
                         $registro->usuario_registra = $request->usuario_registra;
                         // Guarda la tarjeta en la base de datos con el usuario vinculado
                         $registro->save();
+
+                        if($request->estado === '2' || $request->estado === '3'){
+                            $venta = new Venta();
+                            $venta->id_cliente = $request->id_cliente;
+                            $venta->total = 0;
+                            $venta->precio = $request->cupo_maximo;
+                            $venta->tipo_pago = 'efectivo';
+                            $venta->estado = 2 ;
+                            $venta->save();
+                        }
 
                         $tarjeta = Pulsera::where('id', $registro->id)->with(['usuario'])->first();
 
@@ -233,7 +272,21 @@ class BeerController extends Controller
             } else {
                 $registro = Pulsera::where('id', $request->id_pulsera)->first();
                 if ($registro) {
-                        // Asigna el ID del usuario a la tarjeta
+                        if($registro->estado === 2 || $registro->estado === 3){
+                            $consumos = Consumo::where('id_cliente', $registro->id_cliente)->where('estado', 2)->get();
+                            if($consumos->count() > 0){
+                                foreach ($consumos as $consumo) {
+                                    $consumo->estado = 1;
+                                    $consumo->save();
+                                }
+                            }
+                            $venta = Venta::where('id_cliente', $registro->id_cliente)->where('estado', 2)->first();
+                            if($venta){
+                                $venta->estado = 1;
+                                $venta->save();
+                            }
+                        }
+                        // borra el ID del usuario a la tarjeta
                         $registro->id_cliente = null;
                         $registro->cupo_maximo = 0;
                         $registro->estado = 0;
@@ -272,7 +325,7 @@ class BeerController extends Controller
     {
         try {
             // Obtiene todos los registros de la tabla pulsera
-            $tarjetas = Pulsera::with(['usuario', 'usuario_registra'])->get();
+            $tarjetas = Pulsera::with(['usuario', 'usuario_registra', 'usuario.ventas'])->get();
             return ($tarjetas->count() > 0) ?
                 response()->json([
                     'status' => 200,
@@ -511,32 +564,111 @@ class BeerController extends Controller
             } else {
                 $sensor = Pulsera::where('codigo_sensor', $request->id_beer)->first();
                 $maquina = Maquina::where('id', $request->id_maquina)->first();
-                    if($sensor->id_cliente && $maquina->estado){
-                        $sensor->cupo_maximo = round($sensor->cupo_maximo, 2) - round($request->total, 2);
-                        $sensor->save();
-                        $maquina->cantidad = round($maquina->cantidad, 2) - round($request->total, 2);
-                        $maquina->save();
-                        $tarjeta = new Consumo([
-                            'id_pulsera' => $sensor->id,
-                            'total' => round($request->total, 2),
-                            'precio' => round($maquina->precio, 2) * round($request->total, 2),
-                            'id_maquina' => $request->id_maquina,
-                            'estado' => 0,
-                        ]);
-                        $tarjeta->save();
-                        return response()->json([
-                            'status' => 201,
-                            'message' => 'Venta beer creada correctamente.',
-                            'data' => $tarjeta
-                        ], 201);
+                // Cuando la maquina esta activa
+                if($maquina->estado === 1){
+                    if($sensor->id_cliente){
+                        //cuando la pulsera esta activa y es postpago
+                        if($sensor->estado === 1 || $sensor->estado === 4){
+                            //Actualizar el saldo de la pulsera
+                            $sensor->cupo_maximo = round($sensor->cupo_maximo - $request->total, 2);
+                            //condicion cuando se acaba el saldo
+                            if($sensor->cupo_maximo <= 0.1){
+                                $sensor->cupo_maximo = 0;
+                                $sensor->estado = 0;
+                            }
+                            $sensor->save();
+                            //Actualizar la cantidad de la maquina
+                            $maquina->cantidad = round($maquina->cantidad - $request->total, 2);
+                            //condicion cuando se acaba la cerveza en la maquina
+                            if($maquina->cantidad <= 0.1){
+                                $maquina->cantidad = 0;
+                                $maquina->estado = 2;
+                            }
+                            $maquina->save();
+                            //Crear el consumo
+                            $tarjeta = new Consumo([
+                                'id_cliente' => $sensor->id_cliente,
+                                'total' => round($request->total, 2),
+                                'precio' => round($maquina->precio * $request->total, 2),
+                                'id_maquina' => $request->id_maquina,
+                                'estado' => 0,
+                            ]);
+                            $tarjeta->save();
+                            return response()->json([
+                                'status' => 201,
+                                'message' => 'Consumo beer creado correctamente.',
+                                'data' => $tarjeta
+                            ], 201);
+                        //cuando la pulsera esta activa, es prepago o es mixta
+                        }elseif($sensor->estado === 2 || $sensor->estado === 3){
+                            //Actualizar el saldo de la pulsera
+                            $sensor->cupo_maximo = round($sensor->cupo_maximo - ($request->total * $maquina->precio), 2);
+                            //condicion cuando se acaba el saldo y es prepago
+                            if($sensor->cupo_maximo <= 0.1 && $sensor->estado === 2){
+                                $sensor->cupo_maximo = 0;
+                                // $sensor->estado = 2;
+                            //condicion cuando se acaba el saldo y es mixta
+                            }else if($sensor->cupo_maximo <= 0.1 && $sensor->estado === 3){
+                                $sensor->cupo_maximo = 4;
+                                $sensor->estado = 4;
+                            }
+                            $sensor->save();
+                            //Actualizar la cantidad de la maquina
+                            $maquina->cantidad = round($maquina->cantidad - $request->total, 2);
+                            //condicion cuando se acaba la cerveza en la maquina
+                            if($maquina->cantidad <= 0.1){
+                                $maquina->cantidad = 0;
+                                $maquina->estado = 2;
+                            }
+                            $maquina->save();
+                            //Actualizar la venta del usuario
+                            $venta = Venta::where('id_cliente', $sensor->id_cliente)->where('estado', 2)->first();
+                            if($venta){
+                                $venta->total = round($venta->total + $request->total, 2);
+                                $venta->save();
+                                //Crear el consumo
+                                $tarjeta = new Consumo([
+                                    'id_cliente' => $sensor->id_cliente,
+                                    'total' => round($request->total, 2),
+                                    'precio' => round($maquina->precio * $request->total, 2),
+                                    'id_maquina' => $request->id_maquina,
+                                    'estado' => 2,
+                                    'id_venta'=> $venta->id
+                                ]);
+                                $tarjeta->save();
+                                return response()->json([
+                                    'status' => 201,
+                                    'message' => 'Consumo beer creado correctamente.',
+                                    'data' => $tarjeta
+                                ], 201);
+                            }else{
+                                return response()->json([
+                                    'status' => 404,
+                                    'message' => 'Tarjeta no asignada.',
+                                    'data' => null
+                                ], 404);
+                            }
+                        //cuando la pulsera esta desactivada
+                        }else{
+                            return response()->json([
+                                'status' => 404,
+                                'message' => 'Tarjeta no asignada.',
+                                'data' => null
+                            ], 404);
+                        }
                     }else{
                         return response()->json([
                             'status' => 404,
-                            'message' => 'Tarjeta no asignada o maquina no encontrada.',
+                            'message' => 'Tarjeta no asignada',
                             'data' => null
                         ], 404);
                     }
-
+                } else {
+                    return response()->json([
+                        'status' => 201,
+                        'message' => 'Maquina deshabilitada.',
+                    ], 201);
+                }
             }
         } catch (AuthorizationException $th) {
             return response()->json([
@@ -556,26 +688,25 @@ class BeerController extends Controller
     public function listarConsumos(Request $request)
     {
         try {
-            $idPulsera = $request->input('id_pulsera');
+            $idCliente = $request->input('id_cliente');
             // Validar la presencia del ID de pulsera
-            if (!$idPulsera) {
+            if (!$idCliente) {
                 return response()->json([
-                    'error' => 'El campo id_pulsera es obligatorio.'
+                    'error' => 'El campo id_cliente es obligatorio.'
                 ], 400);
             }
 
             try {
-                $pulsera = Pulsera::where('id', $idPulsera)->first();
+                $pulsera = Pulsera::where('id_cliente', $idCliente)->first();
                 if (!$pulsera) {
                     return response()->json([
                         'error' => 'No se encontró la pulsera.'
                     ], 404);
                 }
-                $consumos = Consumo::where('id_pulsera', $idPulsera)
-                                    ->where('estado', 0)
-                                    ->with(['maquina'])
-                                    ->get();
-
+                $consumos = Consumo::where('id_cliente', $idCliente)
+                   ->whereIn('estado', [0, 2])
+                   ->with(['maquina'])
+                   ->get();
                 return response()->json([
                     'data' => $consumos
                 ]);
@@ -602,55 +733,89 @@ class BeerController extends Controller
 
     public function pagarVentas(Request $request){
         try {
-            $idPulsera = $request->input('id_pulsera');
+            $idCliente = $request->input('id_cliente');
             // Validar la presencia del ID de pulsera
-            if (!$idPulsera) {
+            if (!$idCliente) {
                 return response()->json([
-                    'error' => 'El campo id_pulsera es obligatorio.'
+                    'error' => 'El campo id_cliente es obligatorio.'
                 ], 400);
             }
 
             try {
-                $pulsera = Pulsera::where('id', $idPulsera)->first();
+                //obtener la pulsera donde esta registrado el usuario
+                $pulsera = Pulsera::where('id_cliente', $idCliente)->first();
                 if (!$pulsera) {
                     return response()->json([
                         'error' => 'No se encontró la pulsera.'
                     ], 404);
                 }
-                $consumos = Consumo::where('id_pulsera', $idPulsera)
+                if($pulsera->estado === 1){
+                    $consumos = Consumo::where('id_cliente', $idCliente)
                                     ->where('estado', 0)
                                     ->get();
-
-                // Obtener los consumos (como array)
-                $consumosArray = $consumos->toArray();
-
-                // Obtener la suma de los totales y precios
-                $total = array_reduce($consumosArray, function ($carry, $item) {
-                    return $carry + $item['total'];
-                });
-                $precio = array_reduce($consumosArray, function ($carry, $item) {
-                    return $carry + $item['precio'];
-                });
-
-                // Crear la venta
-                $venta = new Venta();
-                $venta->id_cliente = $pulsera->id_cliente;
-                $venta->total = $total;
-                $venta->precio = $precio;
-                $venta->tipo_pago = 'efectivo';
-                $venta->estado = 1;
-                $venta->save();
-
-                // Actualizar el campo id_venta de los consumos
-                foreach ($consumos as $consumo) {
-                    $consumo->id_venta = $venta->id;
-                    $consumo->estado = 1;
-                    $consumo->save();
+                    // Obtener los consumos (como array)
+                    $consumosArray = $consumos->toArray();
+                    // Obtener la suma de los totales y precios
+                    $total = array_reduce($consumosArray, function ($carry, $item) {
+                        return $carry + $item['total'];
+                    });
+                    $precio = array_reduce($consumosArray, function ($carry, $item) {
+                        return $carry + $item['precio'];
+                    });
+                    // Crear la venta
+                    $venta = new Venta();
+                    $venta->id_cliente = $pulsera->id_cliente;
+                    $venta->total = $total;
+                    $venta->precio = $precio;
+                    $venta->tipo_pago = 'efectivo';
+                    $venta->estado = 1;
+                    $venta->save();
+                    // Actualizar el campo id_venta de los consumos
+                    foreach ($consumos as $consumo) {
+                        $consumo->id_venta = $venta->id;
+                        $consumo->estado = 1;
+                        $consumo->save();
+                    }
+                }elseif($pulsera->estado === 4){
+                    $consumosPP = Consumo::where('id_cliente', $idCliente)
+                                    ->where('estado', 0)
+                                    ->get();
+                    // Obtener los consumos (como array)
+                    $consumosArray = $consumosPP->toArray();
+                    // Obtener la suma de los totales y precios
+                    $total = array_reduce($consumosArray, function ($carry, $item) {
+                        return $carry + $item['total'];
+                    });
+                    $precio = array_reduce($consumosArray, function ($carry, $item) {
+                        return $carry + $item['precio'];
+                    });
+                    $venta = Venta::where('id_cliente', $pulsera->id_cliente)->where('estado', 2)->first();
+                    if($venta){
+                        $venta->total = $venta->total + $total;
+                        $venta->precio = $venta->precio + $precio;
+                        $venta->estado = 1;
+                        $venta->save();
+                    }
+                    // Actualizar el campo id_venta de los consumos
+                    foreach ($consumosPP as $consumo) {
+                        $consumo->id_venta = $venta->id;
+                        $consumo->estado = 1;
+                        $consumo->id_venta = $venta->id;
+                        $consumo->save();
+                    }
+                    $consumos = Consumo::where('id_cliente', $idCliente)
+                                    ->where('estado', 2)
+                                    ->get();
+                    // Actualizar el campo id_venta de los consumos
+                    foreach ($consumos as $consumo) {
+                        $consumo->id_venta = $venta->id;
+                        $consumo->estado = 1;
+                        $consumo->save();
+                    }
                 }
-
                 // Vaciar la pulsera
                  // Obtener el codigo_sensor del request original
-                $newRequest = new Request(['id_pulsera' => $idPulsera]); // Crear un nuevo objeto Request
+                $newRequest = new Request(['id_pulsera' => $pulsera->id]); // Crear un nuevo objeto Request
                 $response =$this->limpiarTarjeta($newRequest); // Pasar el nuevo objeto Request
 
                 // Devolver los resultados

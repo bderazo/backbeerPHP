@@ -14,8 +14,8 @@ return new class extends Migration {
     {
         Schema::create('consumo', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('id_pulsera')
-                ->constrained('pulsera')
+            $table->foreignUuid('id_cliente')
+                ->constrained('usuarios')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
             $table->double('total');

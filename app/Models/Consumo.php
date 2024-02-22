@@ -14,7 +14,7 @@ class Consumo extends Model
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'id_pulsera',
+        'id_cliente',
         'total',
         'precio',
         'id_maquina',
@@ -27,9 +27,9 @@ class Consumo extends Model
         return $this->belongsTo(Maquina::class, 'id_maquina');
     }
 
-    public function pulsera()
+    public function cliente()
     {
-        return $this->belongsTo(Pulsera::class, 'id_pulsera');
+        return $this->belongsTo(Usuario::class, 'id_cliente');
     }
 
     public function venta()

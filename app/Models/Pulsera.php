@@ -31,10 +31,6 @@ class Pulsera extends Model
     {
         return $this->belongsTo(Usuario::class, 'usuario_registra');
     }
-    public function consumos()
-    {
-        return $this->hasMany(Consumo::class, 'id_pulsera');
-    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
