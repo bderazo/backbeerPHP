@@ -19,12 +19,8 @@ return new class extends Migration {
             $table->string('telefono')->nullable();
             $table->string('correo')->unique();
             $table->string('password');
-<<<<<<<< HEAD:database/migrations/2022_10_31_200700_create_usuarios_table.php
             $table->enum('rol', ['ADMIN','DUEÑO', 'SUPERVISOR', 'VENDEDOR', 'CLIENTE']);
             $table->enum('tipo_usuario', ['GOLD', 'SILVER', 'BRONZE', 'FREE']);
-========
-            $table->enum('rol', ['ADMIN','PROPIETARIO','GERENTE','CAJERO','MESERO','COCINERO','USER', 'PROPIETARIO-ONLY']);
->>>>>>>> bb6e9c900b9d6431b2faa3192b6babfdd8a35c71:database/migrations/no enviar/2014_10_13_000000_create_usuarios_table.php
             $table->string('identificacion')->unique()->nullable();
             $table->double('puntos')->nullable();
             $table->string('registrado_por');

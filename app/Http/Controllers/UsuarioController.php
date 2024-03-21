@@ -117,7 +117,7 @@ class UsuarioController extends Controller
     public function listarUsuarios(Request $request)
     {
         try {
-            $lst_comercios = Usuario::where('rol', 'CLIENTE')->paginate(10);
+            $lst_comercios = Usuario::whereNotIn('rol', ['ADMIN'])->paginate(10);
             if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,

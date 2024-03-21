@@ -117,10 +117,11 @@ class BeerController extends Controller
                                     }
                                 // Si el sensor esta deshabilitado
                                 }elseif(intval($sensor->estado) === 0){
+                                    // aqui realizar validaciones del estado de la pulsera
                                     $maquina->codigo_sensor = $sensor->codigo_sensor;
                                     $maquina->save();
                                     return response()->json([
-                                        'status' => 200,
+                                        'status' => 203,
                                         // 'message' => 'Alerta: Sensor enviada.',
                                         'data' => 'Alerta: Sensor enviado.'
                                     ], 200)->content();
